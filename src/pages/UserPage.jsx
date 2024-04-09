@@ -15,7 +15,7 @@ const UserPage = () => {
             <UserPost
                 likesCount={110}
                 repliesCount={40}
-                // postImg={'/public/post3.JPG'}
+                postImg={'/public/post3.JPG'}
                 postTitle={'Spiderman comes home!'}
             />
         </>

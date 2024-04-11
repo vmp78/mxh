@@ -11,7 +11,7 @@ const UserPage = () => {
                 postImg={'/public/post1.jpg'}
                 postTitle={'4K laptop background'}
             />
-            <UserPost likesCount={120} repliesCount={10} postImg={'/public/post2.JPG'} postTitle={'Critianoooooo'} />
+            <UserPost likesCount={120} repliesCount={10} postImg={'/public/post2.JPG'} postTitle={'Cristianoooooo'} />
             <UserPost
                 likesCount={110}
                 repliesCount={40}

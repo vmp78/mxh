@@ -8,11 +8,11 @@ const protectRoute = async (req, res, next) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET); // check the token to get the payload
 
-        const user = await User.findById(decoded.userId).select('-password');
+        const user = await User.findById(decoded.userId).select('-password'); // select anything but the password
 
         req.user = user;
 
-        next();
+        next(); // call next function
     } catch (error) {
         res.status(500).json({ message: error.message });
         console.log('Error in protectRoute: ' + error.message);

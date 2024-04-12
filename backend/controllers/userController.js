@@ -37,12 +37,13 @@ const signupUser = async (req, res) => {
             genTokenAndSetCookie(newUser._id, res);
 
             res.status(201).json({
+                message: 'User signup successfully',
                 _id: newUser._id,
                 name: newUser.name,
                 email: newUser.email,
                 username: newUser.username,
                 bio: newUser.bio,
-                profilePic: newUser.profilePic,
+                avatar: newUser.avatar,
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });
@@ -68,6 +69,7 @@ const loginUser = async (req, res) => {
         genTokenAndSetCookie(user._id, res);
 
         res.status(200).json({
+            message: 'Successfully logged in',
             _id: user._id,
             name: user.name,
             email: user.email,
@@ -81,7 +83,7 @@ const loginUser = async (req, res) => {
 
 const logoutUser = (req, res) => {
     try {
-        res.cookie('jwt', '', { maxAge: 1 }); // clear the cookie
+        res.cookie('token', '', { maxAge: 1 }); // clear the cookie
         res.status(200).json({
             message: 'Successfully logged out',
         });
@@ -123,7 +125,7 @@ const followUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-    const { name, email, username, password, profilePic, bio } = req.body;
+    const { name, email, username, password, avatar, bio } = req.body;
     const userId = req.user._id;
     try {
         let user = await User.findById(userId);
@@ -141,7 +143,7 @@ const updateUser = async (req, res) => {
         user.name = name || user.name;
         user.email = email || user.email;
         user.username = username || user.username;
-        user.profilePic = profilePic || user.profilePic;
+        user.avatar = avatar || user.avatar;
         user.bio = bio || user.bio;
 
         user = await user.save();

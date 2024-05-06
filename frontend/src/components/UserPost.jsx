@@ -4,14 +4,20 @@ import { Link } from 'react-router-dom';
 import Actions from './Actions';
 import { useState } from 'react';
 
-const UserPost = ({ likesCount, repliesCount, postTitle, postImg }) => {
+const UserPost = (props) => {
+    // eslint-disable-next-line react/prop-types
+    const { likesCount, repliesCount, postImg, postTitle } = props.data
+    // eslint-disable-next-line react/prop-types
+    const { name, avt, tick } = props.userData
+    // eslint-disable-next-line react/prop-types
+    console.log(props.data);
     const [liked, setLiked] = useState(false);
     return (
         <Link to={'/phucnguyendinh/post/1'}>
             <Flex gap={3} mb={4} py={5}>
                 {/*left side post*/}
                 <Flex flexDirection={'column'} alignItems={'center'}>
-                    <Avatar size={'md'} name="phucnguyendinh" src="/public/avatar.JPG" />
+                    <Avatar size={'md'} name="phucnguyendinh" src={avt} />
                     <Box w={'1px'} h={'full'} bg={'gray.light'} my={2}></Box>
                     <Box position={'relative'} w={'full'}>
                         <Avatar
@@ -48,9 +54,9 @@ const UserPost = ({ likesCount, repliesCount, postTitle, postImg }) => {
                     <Flex justifyContent={'space-between'} w={'full'}>
                         <Flex w={'full'} alignItems={'center'}>
                             <Text fontSize={'sm'} fontWeight={'bold'}>
-                                Nguyễn Đình Phúc
+                                {name}
                             </Text>
-                            <Image src="/public/verified.png" w={4} h={4} ml={1} />
+                            {tick && <Image src="/public/verified.png" w={4} h={4} ml={1} />}
                         </Flex>
 
                         <Flex gap={4} alignItems={'center'}>

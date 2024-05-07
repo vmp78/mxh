@@ -10,6 +10,7 @@ import {
     MenuList,
     MenuItem,
     useToast,
+    Square,
 } from '@chakra-ui/react';
 import { Avatar } from '@chakra-ui/avatar';
 import { BsInstagram } from 'react-icons/bs';
@@ -27,17 +28,16 @@ const UserHeader = () => {
     return (
         <VStack gap={4} alignItems={'start'}>
             <Flex justifyContent={'space-between'} w={'full'}>
-                <Box>
-                    <Text fontSize={'2xl'} fontWeight={'semibold'}>
-                        Phúc Nguyễn Đình
-                    </Text>
-                    <Flex gap={2} alignItems={'center'}>
-                        <Text fontSize={'sm'}>phuc_1411_</Text>
-                        <Text fontSize={'xs'} bg={'gray.dark'} color={'gray.light'} p={1} borderRadius={'full'}>
-                            threads.net
+                <Flex direction={'column'} justifyContent={'center'}>
+                    <Square>
+                        <Text fontSize={'2xl'} fontWeight={'semibold'}>
+                            Phúc Nguyễn Đình
                         </Text>
-                    </Flex>
-                </Box>
+                    </Square>
+                    <Box>
+                        <Text fontSize={'sm'}>phuc_1411-_</Text>
+                    </Box>
+                </Flex>
                 <Box>
                     <Avatar name="Nguyen Dinh Phuc" src="/avatar.JPG" size={{ base: 'md', md: 'xl' }} />
                 </Box>
@@ -47,15 +47,13 @@ const UserHeader = () => {
             <Flex w={'full'} justifyContent={'space-between'}>
                 <Flex gap={2} alignItems={'center'}>
                     <Text color={'gray.light'}>6 followers</Text>
-                    <Box w={1} h={1} bg={'gray.light'} borderRadius={'full'}></Box> {/*dau cham o giua*/}
-                    <Link color={'gray.light'} href={'https://www.instagram.com/'}>
-                        instagram.com
-                    </Link>
-                    {/*link ins o ben canh*/}
                 </Flex>
+
                 <Flex>
                     <Box className="icon-container">
+                    <Link href={`https://www.instagram.com/`} target='_blank'>
                         <BsInstagram size={24} cursor={'pointer'} />
+                    </Link>
                     </Box>
                     <Menu>
                         <MenuButton>

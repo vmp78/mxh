@@ -19,7 +19,7 @@ function App() {
                 <Route
                     path="/"
                     element={
-                        user ? (
+                        true ? (
                             <Container maxW="620px">
                                 <Header />
                                 <HomePage />
@@ -34,7 +34,7 @@ function App() {
                 <Route
                     path="/update"
                     element={
-                        true ? (
+                        user ? (
                             <Container maxW="620px">
                                 <Header />
                                 <EditProfilePage />

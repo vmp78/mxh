@@ -74,6 +74,8 @@ const loginUser = async (req, res) => {
             name: user.name,
             email: user.email,
             username: user.username,
+            bio: user.bio,
+            avatar: user.avatar,
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

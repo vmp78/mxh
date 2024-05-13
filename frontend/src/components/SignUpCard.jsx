@@ -46,7 +46,7 @@ export default function SignupCard() {
                             </Box>
                         </HStack>
                         <FormControl isRequired>
-                            <FormLabel>Email address</FormLabel>
+                            <FormLabel>Email</FormLabel>
                             <Input type="email" />
                         </FormControl>
                         <FormControl isRequired>

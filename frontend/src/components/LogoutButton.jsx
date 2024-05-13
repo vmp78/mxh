@@ -1,13 +1,12 @@
 import { Button } from '@chakra-ui/react';
-import { useSetRecoilState } from 'recoil';
-import userAtom from '../atoms/userAtom';
+import { MdLogout } from 'react-icons/md';
 
 const LogoutButton = () => {
     // connect to be
     const handleLogout = async () => {};
     return (
         <Button position="fixed" top="30px" right="30px" size="sm" onClick={handleLogout}>
-            Log out
+            <MdLogout />
         </Button>
     );
 };

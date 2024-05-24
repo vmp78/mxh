@@ -10,62 +10,22 @@ import { useRecoilValue } from 'recoil';
 import userAtom from './atoms/userAtom';
 import LogoutButton from './components/LogoutButton';
 
-function App() {
-    const user = useRecoilValue(userAtom);
-
+function App() { 
+    const user= useRecoilValue(userAtom);
+    console.log(user);
     return (
-        <Container maxW="full" p={0}>
+        <Container maxW="620px" >
+            <Header />
             <Routes>
-                <Route
-                    path="/"
-                    element={
-                        true ? (
-                            <Container maxW="620px">
-                                <Header />
-                                <HomePage />
-                            </Container>
-                        ) : (
-                            <Navigate to="/auth" />
-                        )
-                    }
-                />
-                <Route path="/auth" element={<AuthPage />} />
+            <Route path="/" element={user ? <HomePage /> : <Navigate to="/auth"/>} />
+            <Route path="/auth" element={!user ? <AuthPage /> : <Navigate to= "/" />} />
+            <Route path="/update" element={user ? <EditProfilePage /> : <Navigate to= "/auth" />} />
 
-                <Route
-                    path="/update"
-                    element={
-                        user ? (
-                            <Container maxW="620px">
-                                <Header />
-                                <EditProfilePage />
-                            </Container>
-                        ) : (
-                            <Navigate to="/auth" />
-                        )
-                    }
-                />
-                <Route
-                    path="/:username"
-                    element={
-                        <Container maxW="620px">
-                            <Header />
-                            <UserPage />
-                        </Container>
-                    }
-                />
-                <Route
-                    path="/:username/post/:pid"
-                    element={
-                        <Container maxW="620px">
-                            <Header />
-                            <PostPage />
-                        </Container>
-                    }
-                />
+            <Route path="/:username" element={<UserPage />} />
+            <Route path="/:username/post/:pid" element={<PostPage />} />
             </Routes>
 
-            {/* {user && LogoutButton} */}
-            <LogoutButton />
+            {user && <LogoutButton/>}
         </Container>
     );
 }

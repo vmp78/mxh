@@ -27,6 +27,6 @@ router.post('/logout', logoutUser);
 router.post('/follow/:id', protectRoute, followUser); // protectRoute use to prevent non login user from following/unfollowing
 
 // Update user
-router.post('/update/:id', protectRoute, updateUser);
+router.put('/update/:id', protectRoute, updateUser);
 
 export default router;

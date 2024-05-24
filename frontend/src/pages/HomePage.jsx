@@ -1,7 +1,6 @@
-import { Button, Flex, Input, Textarea } from "@chakra-ui/react";
+import { Button, Flex, } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import axios from "axios";
+
 
 const HomePage = () => {
 

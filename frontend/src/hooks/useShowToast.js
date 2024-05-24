@@ -4,14 +4,14 @@ const useShowToast = () => {
     const toast = useToast();
     const showToast = (title, description, status) => {
         toast({
-            title: title,
-            description: description,
-            status: status,
-            duration: 2000,
+            title ,
+            description,
+            status,
+            duration: 5000,
             isClosable: true,
         });
     };
-    return;
+    return showToast;
 };
 
 export default useShowToast;

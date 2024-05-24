@@ -16,7 +16,7 @@ const app = express(); // create express server
 const PORT = process.env.PORT || 5000; // backup the port with 5000 if PORT is not specified in the config
 
 cloudinary.config({
-    cloud_name:process.env.CLOUDINARY_CLOUD_NAM,
+    cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
     api_key:process.env.CLOUDINARY_API_KEY,
     api_secret:process.env.CLOUDINARY_API_SECRET,
 });

@@ -6,22 +6,37 @@ import {
     Text,
     MenuButton,
     Menu,
-    Portal,
     MenuList,
     MenuItem,
     useToast,
     Square,
+    Button
 } from '@chakra-ui/react';
+import { Portal } from '@chakra-ui/portal';
 import { Avatar } from '@chakra-ui/avatar';
 import { BsInstagram } from 'react-icons/bs';
 import { CgMoreO } from 'react-icons/cg';
+import {useRecoilValue} from 'recoil';
+import userAtom from '../atoms/userAtom';
+import {Link as RouterLink} from 'react-router-dom';
 
-const UserHeader = () => {
+
+const UserHeader = ({user}) => {
     const toast = useToast();
-    const handleCopyURL = () => {
-        const url = window.location.href;
-        navigator.clipboard.writeText(url).then(() => {
-            toast({ description: 'URL copied to clipboard', duration: 2000 });
+    const currentUser = useRecoilValue(userAtom);// logged in user
+    // const [following,setFollowing]=useState(user.followers.includes(currentUser._id));
+    // console.log(following)
+
+    const copyURL =() =>{
+        const currentURL = window.location.href;
+        navigator.clipboard.writeText(currentURL).then(()=>{
+            toast({
+                title:"success",
+                status:"success",
+                description:"Profile link copied!",
+                duration:5000,
+                isClosable:true,
+            });
         });
     };
 
@@ -31,22 +46,47 @@ const UserHeader = () => {
                 <Flex direction={'column'} justifyContent={'center'}>
                     <Square>
                         <Text fontSize={'2xl'} fontWeight={'semibold'}>
-                            Phúc Nguyễn Đình
+                            {user.name}
                         </Text>
                     </Square>
                     <Box>
-                        <Text fontSize={'sm'}>phuc_1411-_</Text>
+                        <Text fontSize={'sm'}>{user.username}</Text>
                     </Box>
                 </Flex>
                 <Box>
-                    <Avatar name="Nguyen Dinh Phuc" src="/avatar.JPG" size={{ base: 'md', md: 'xl' }} />
+                    {user.avatar && (
+                        <Avatar name={user.name}
+                        src={user.avatar}
+                        size={{ base: 'md', md: 'xl' }} 
+                        />
+                    )}
+                    {!user.avatar && (
+                        <Avatar name={user.name}
+                        src="https://bit.ly/broken-link"
+                        size={{ base: 'md', md: 'xl' }} 
+                        />
+                    )}
                 </Box>
             </Flex>
 
-            <Text>Test bio</Text>
+            <Text>{user.bio}</Text>
+
+            {currentUser._id === user._id && (
+                <Link as={RouterLink} to='/update'>
+                    <Button size={"sm"}>Edit Profile</Button> 
+                </Link>
+            )}
+
+            {currentUser._id !== user._id && (
+                    <Button size={"sm"}>
+                        {following? "unfollow":"Follow"}
+                        </Button> 
+                
+            )}
+
             <Flex w={'full'} justifyContent={'space-between'}>
                 <Flex gap={2} alignItems={'center'}>
-                    <Text color={'gray.light'}>6 followers</Text>
+                    <Text color={'gray.light'}>1 followers</Text>
                 </Flex>
 
                 <Flex>
@@ -63,25 +103,9 @@ const UserHeader = () => {
                         </MenuButton>
                         <Portal>
                             <MenuList bg={'gray.dark'}>
-                                <MenuItem bg={'gray.dark'} fontWeight={'semibold'} onClick={handleCopyURL}>
+                                <MenuItem bg={'gray.dark'} fontWeight={'semibold'} onClick={copyURL}>
                                     Copy link
                                 </MenuItem>
-
-                                {/* <MenuItem bg={'gray.dark'} fontWeight={'semibold'}>
-                                    About this profile
-                                </MenuItem>
-                                <MenuItem bg={'gray.dark'} fontWeight={'semibold'}>
-                                    Mute
-                                </MenuItem>
-                                <MenuItem bg={'gray.dark'} fontWeight={'semibold'}>
-                                    Restrict
-                                </MenuItem>
-                                <MenuItem bg={'gray.dark'} color={'red'} fontWeight={'semibold'}>
-                                    Block
-                                </MenuItem>
-                                <MenuItem bg={'gray.dark'} color={'red'} fontWeight={'semibold'}>
-                                    Report
-                                </MenuItem> */}
                             </MenuList>
                         </Portal>
                     </Menu>

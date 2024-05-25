@@ -1,73 +1,41 @@
-// import { useEffect } from 'react';
-// import axios from 'axios';
-
+import { useEffect,useState } from 'react';
+import { useParams } from 'react-router-dom';
 import UserHeader from '../components/UserHeader';
 import UserPost from '../components/UserPost';
+import useShowToast from '../hooks/useShowToast';
 
-const userData ={
-    name:"Nguyễn Đình Phúc",
-    avt:'/public/avatar.JPG',
-    tick: true,
-
-}
 
 const UserPage = () => {
 
-    let postData = [
-        {
-            userName:"Nguyễn Đình Phúc",
-            likesCount: 1200,
-            repliesCount: 1000,
-            postImg: '/public/post1.jpg',
-            postTitle: '4K laptop background'
-        },
-        {
-            likesCount: 123412,
-            repliesCount: 1000,
-            postImg: '/public/post2.jpg',
-            postTitle: 'Spiderman comes home!'
-        },
-        {
-            likesCount: 1231412,
-            repliesCount: 1000,
-            postImg: '/public/post3.jpg',
-            postTitle: '4K laptop background'
-        },
-        {
-            likesCount: 123,
-            repliesCount: 1000,
-            postImg: '/public/post1.jpg',
-            postTitle: '4K laptop background'
-        },
-        {
-            likesCount: 2341234,
-            repliesCount: 1000,
-            postImg: '/public/post1.jpg',
-            postTitle: '4K laptop background'
-        },
-        {
-            likesCount: 34656756,
-            repliesCount: 1000,
-            postImg: '/public/post1.jpg',
-            postTitle: '4K laptop background'
-        },
-    ]
+    const [user,setUser]= useState(null);
+    const {username}= useParams();
+    const showToast= useShowToast();
+    useEffect ( () => {
+        const getUser = async () => {
+            try {
+                const res = await fetch(`/api/users/profile/${username}`);
+                const data= await res.json();
+                if(data.error){
+                    showToast("Error",data.error,"error");
+                    return;
+                }
+                setUser(data);
+            } catch (error) {
+                showToast("Error",error,"error");
+            }
+        };
+
+        getUser();
+    },[username,showToast]);   
+    
+    if(!user) return null;
 
     return (
         <>
-            <UserHeader />
-            {postData.map((data, index) => (
-                <UserPost key={index} data={data} userData={userData} />
-            ))}
+            <UserHeader user={user} />
+            {/* <UserPost likes={100}/> */}
         </>
     );
 };
-// const name = 'hoa';
-
-    // useEffect(() => {
-    //     axios.get(`https://tiktok.fullstack.edu.vn/api/users/search?q=${name}&type=less`)
-    //         .then(res => postData = res.data)
-    //         .catch(err => console.log(err))
-    // }, [])
 
 export default UserPage;

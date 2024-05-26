@@ -10,32 +10,32 @@ import {
     MenuItem,
     useToast,
     Square,
-    Button
+    Button,
 } from '@chakra-ui/react';
 import { Portal } from '@chakra-ui/portal';
 import { Avatar } from '@chakra-ui/avatar';
 import { BsInstagram } from 'react-icons/bs';
 import { CgMoreO } from 'react-icons/cg';
-import {useRecoilValue} from 'recoil';
+import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
-import {Link as RouterLink} from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 
-
-const UserHeader = ({user}) => {
+const UserHeader = ({ user }) => {
     const toast = useToast();
-    const currentUser = useRecoilValue(userAtom);// logged in user
+    const currentUser = useRecoilValue(userAtom); // logged in user
     // const [following,setFollowing]=useState(user.followers.includes(currentUser._id));
     // console.log(following)
+    // console.log(user.user.username);
 
-    const copyURL =() =>{
+    const copyURL = () => {
         const currentURL = window.location.href;
-        navigator.clipboard.writeText(currentURL).then(()=>{
+        navigator.clipboard.writeText(currentURL).then(() => {
             toast({
-                title:"success",
-                status:"success",
-                description:"Profile link copied!",
-                duration:5000,
-                isClosable:true,
+                title: 'success',
+                status: 'success',
+                description: 'Profile link copied!',
+                duration: 5000,
+                isClosable: true,
             });
         });
     };
@@ -46,43 +46,32 @@ const UserHeader = ({user}) => {
                 <Flex direction={'column'} justifyContent={'center'}>
                     <Square>
                         <Text fontSize={'2xl'} fontWeight={'semibold'}>
-                            {user.name}
+                            {user.user.name}
                         </Text>
                     </Square>
                     <Box>
-                        <Text fontSize={'sm'}>{user.username}</Text>
+                        <Text fontSize={'sm'}>{user.user.username}</Text>
                     </Box>
                 </Flex>
                 <Box>
-                    {user.avatar && (
-                        <Avatar name={user.name}
-                        src={user.avatar}
-                        size={{ base: 'md', md: 'xl' }} 
-                        />
+                    {user.user.avatar && (
+                        <Avatar name={user.user.name} src={user.user.avatar} size={{ base: 'md', md: 'xl' }} />
                     )}
-                    {!user.avatar && (
-                        <Avatar name={user.name}
-                        src="https://bit.ly/broken-link"
-                        size={{ base: 'md', md: 'xl' }} 
-                        />
+                    {!user.user.avatar && (
+                        <Avatar name={user.name} src="https://bit.ly/broken-link" size={{ base: 'md', md: 'xl' }} />
                     )}
                 </Box>
             </Flex>
 
-            <Text>{user.bio}</Text>
+            <Text>{user.user.bio}</Text>
 
-            {currentUser._id === user._id && (
-                <Link as={RouterLink} to='/update'>
-                    <Button size={"sm"}>Edit Profile</Button> 
+            {currentUser._id === user.user._id && (
+                <Link as={RouterLink} to="/update">
+                    <Button size={'sm'}>Edit Profile</Button>
                 </Link>
             )}
 
-            {currentUser._id !== user._id && (
-                    <Button size={"sm"}>
-                        {following? "unfollow":"Follow"}
-                        </Button> 
-                
-            )}
+            {/* {currentUser._id !== user._id && <Button size={'sm'}>{following ? 'unfollow' : 'Follow'}</Button>} */}
 
             <Flex w={'full'} justifyContent={'space-between'}>
                 <Flex gap={2} alignItems={'center'}>
@@ -91,9 +80,9 @@ const UserHeader = ({user}) => {
 
                 <Flex>
                     <Box className="icon-container">
-                    <Link href={`https://www.instagram.com/`} target='_blank'>
-                        <BsInstagram size={24} cursor={'pointer'} />
-                    </Link>
+                        <Link href={`https://www.instagram.com/`} target="_blank">
+                            <BsInstagram size={24} cursor={'pointer'} />
+                        </Link>
                     </Box>
                     <Menu>
                         <MenuButton>

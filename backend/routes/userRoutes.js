@@ -12,7 +12,7 @@ import protectRoute from '../middlewares/protectRoute.js';
 const router = express.Router();
 
 // Get profile
-router.get('/profile/:username', getUserProfile);
+router.get('/profile/:query', getUserProfile);
 
 // Sign up
 router.post('/signup', signupUser);

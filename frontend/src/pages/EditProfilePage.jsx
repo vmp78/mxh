@@ -27,12 +27,14 @@ export default function EditProfilePage() {
         avatar:"",
     });
     const fileRef= useRef(null);
+    const [updating,setUpdating]= useState(false);
     const showToast= useShowToast();
 
     const {handleImageChange, imgUrl}= usePreviewImg()
     const handleSubmit = async(e) =>{
         e.preventDefault();
-
+        if(updating) return;
+        setUpdating(true);
         try {
             const res = await fetch(`/api/users/update/${user._id}`,{
                 method: "PUT",
@@ -51,6 +53,8 @@ export default function EditProfilePage() {
             localStorage.setItem("user-threads",JSON.stringify(data));
         } catch (error) {
             showToast('Error',error, 'error');
+        }finally{
+            setUpdating(false);
         }
     }
     return (
@@ -96,7 +100,7 @@ export default function EditProfilePage() {
                     value={inputs.username}
                     _placeholder={{ color: 'gray.500' }} type="text" />
                 </FormControl>
-                <FormControl isRequired>
+                <FormControl >
                     <FormLabel>Email address</FormLabel>
                     <Input placeholder="your-email@example.com" 
                     onChange= {(e)=> setInputs({...inputs, email :e.target.value})}
@@ -110,7 +114,7 @@ export default function EditProfilePage() {
                     value={inputs.bio}
                     _placeholder={{ color: 'gray.500' }} type="email" />
                 </FormControl>
-                <FormControl isRequired>
+                <FormControl >
                     <FormLabel>Password</FormLabel>
                     <Input placeholder="example-password" 
                     onChange= {(e)=> setInputs({...inputs, password:e.target.value})}
@@ -122,7 +126,7 @@ export default function EditProfilePage() {
                         Cancel
                     </Button>
                     <Button colorScheme="cyan" w="full"
-                    type ='submit' >
+                    type ='submit' isLoading={updating}>
                         Submit
                     </Button>
                 </Stack>

@@ -24,13 +24,15 @@ export default function LoginCard() {
     const [showPassword, setShowPassword] = useState(false);
     const setAuthScreen = useSetRecoilState(authScreenAtom);
     const setUser= useSetRecoilState(userAtom);
-    
+    const [loading,setLoading]=useState(false);
+
     const [inputs,setInputs]= useState({
         username:"",
         password:"",
     });
     const showToast= useShowToast();
     const handleLogin= async()=>{
+        setLoading(true);
         try {
             const res = await fetch("api/users/login",{
                 method: "POST",
@@ -48,6 +50,8 @@ export default function LoginCard() {
             setUser(data);
         } catch (error) {
             showToast("Error", error,"error");
+        }finally{
+            setLoading(false);
         }
     }
     return (
@@ -98,6 +102,7 @@ export default function LoginCard() {
                                     bg: useColorModeValue('gray.700', 'gray.800'),
                                 }}
                                 onClick= {handleLogin}
+                                isLoading={loading}
                             >
                                 Log in
                             </Button>

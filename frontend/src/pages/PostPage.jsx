@@ -72,8 +72,8 @@ const PostPage = () => {
 	return (
 		<>
 			<Flex>
-				<Flex w={"full"} alignItems={"center"} gap={3}>
-					<Avatar src={user.avtar} size={"md"} name='Mark Zuckerberg' />
+				<Flex x w={"full"} alignItems={"center"} gap={3}>
+					<Avatar src={user.avatar} size={"md"} name={user.name} />
 					<Flex>
 						<Text fontSize={"sm"} fontWeight={"bold"}>
 							{user.username}

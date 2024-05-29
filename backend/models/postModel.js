@@ -33,7 +33,7 @@ const postSchema = mongoose.Schema(
                 userAvatar: {
                     type: String,
                 },
-                usernames: {
+                username: {
                     type: String,
                 },
             },

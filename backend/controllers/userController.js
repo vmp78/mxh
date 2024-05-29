@@ -139,44 +139,106 @@ const followUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-    const { name, email, username, password, bio } = req.body;
-    let { avatar } = req.body;
-    const userId = req.user._id;
-    try {
-        let user = await User.findById(userId);
-        if (!user) return res.status(404).json({ error: 'User not found!' });
+	const { name, email, username, password, bio } = req.body;
+	let { avatar } = req.body;
 
-        if (req.params.id !== userId.toString())
-            return res.status(404).json({ error: "Cannot update other user's profile!" });
+	const userId = req.user._id;
+	try {
+		let user = await User.findById(userId);
+		if (!user) return res.status(400).json({ error: "User not found" });
 
-        if (password) {
-            const salt = await bcrypt.genSalt(10);
-            const hashedPassword = await bcrypt.hash(password, salt);
-            user.password = hashedPassword;
-        }
+		if (req.params.id !== userId.toString())
+			return res.status(400).json({ error: "You cannot update other user's profile" });
 
-        if (avatar) {
-            if (user.avatar) {
-                await cloudinary.uploader.destroy(user.avatar.split('/').pop().split('.')[0]);
-            }
+		if (password) {
+			const salt = await bcrypt.genSalt(10);
+			const hashedPassword = await bcrypt.hash(password, salt);
+			user.password = hashedPassword;
+		}
 
-            const uploadResponse = await cloudinary.uploader.upload(avatar);
-            avatar = uploadResponse.secure_url;
-        }
+		if (avatar) {
+			if (user.avatar) {
+				await cloudinary.uploader.destroy(user.avatar.split("/").pop().split(".")[0]);
+			}
 
-        user.name = name || user.name;
-        user.email = email || user.email;
-        user.username = username || user.username;
-        user.avatar = avatar || user.avatar;
-        user.bio = bio || user.bio;
+			const uploadedResponse = await cloudinary.uploader.upload(avatar);
+			avatar = uploadedResponse.secure_url;
+		}
 
-        user = await user.save();
+		user.name = name || user.name;
+		user.email = email || user.email;
+		user.username = username || user.username;
+		user.avatar = avatar || user.avatar;
+		user.bio = bio || user.bio;
 
-        res.status(200).json({ message: 'Update successful', user });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-        console.log('Error in updateUser: ' + error.message);
-    }
+		user = await user.save();
+
+		// Find all posts that this user replied and update username and userAvatar fields
+		await Post.updateMany(
+			{ "replies.userId": userId },
+			{
+				$set: {
+					"replies.$[reply].username": user.username,
+					"replies.$[reply].userAvatar": user.avatar,
+				},
+			},
+			{ arrayFilters: [{ "reply.userId": userId }] }
+		);
+
+		// password should be null in response
+		user.password = null;
+
+		res.status(200).json(user);
+	} catch (err) {
+		res.status(500).json({ error: err.message });
+		console.log("Error in updateUser: ", err.message);
+	}
 };
 
-export { signupUser, loginUser, logoutUser, followUser, updateUser, getUserProfile };
+
+
+const getSuggestedUsers = async (req, res) => {
+	try {
+		// exclude the current user from suggested users array and exclude users that current user is already following
+		const userId = req.user._id;
+
+		const usersFollowedByYou = await User.findById(userId).select("following");
+
+		const users = await User.aggregate([
+			{
+				$match: {
+					_id: { $ne: userId },
+				},
+			},
+			{
+				$sample: { size: 10 },
+			},
+		]);
+		const filteredUsers = users.filter((user) => !usersFollowedByYou.following.includes(user._id));
+		const suggestedUsers = filteredUsers.slice(0, 4);
+
+		suggestedUsers.forEach((user) => (user.password = null));
+
+		res.status(200).json(suggestedUsers);
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
+const freezeAccount = async (req, res) => {
+	try {
+		const user = await User.findById(req.user._id);
+		if (!user) {
+			return res.status(400).json({ error: "User not found" });
+		}
+
+		user.isFrozen = true;
+		await user.save();
+
+		res.status(200).json({ success: true });
+	} catch (error) {
+		res.status(500).json({ error: error.message });
+	}
+};
+
+export { signupUser, loginUser, logoutUser, followUser, updateUser, getUserProfile, getSuggestedUsers, freezeAccount,};

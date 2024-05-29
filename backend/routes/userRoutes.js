@@ -6,6 +6,8 @@ import {
     followUser,
     updateUser,
     getUserProfile,
+    getSuggestedUsers,
+	freezeAccount,
 } from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -13,6 +15,8 @@ const router = express.Router();
 
 // Get profile
 router.get('/profile/:query', getUserProfile);
+
+router.get("/suggested", protectRoute, getSuggestedUsers);
 
 // Sign up
 router.post('/signup', signupUser);
@@ -28,5 +32,7 @@ router.post('/follow/:id', protectRoute, followUser); // protectRoute use to pre
 
 // Update user
 router.put('/update/:id', protectRoute, updateUser);
+
+router.put("/freeze", protectRoute, freezeAccount);
 
 export default router;

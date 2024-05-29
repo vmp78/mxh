@@ -13,7 +13,7 @@ connectDB();
 
 const app = express(); // create express server
 
-const PORT = process.env.PORT || 5000; // backup the port with 5000 if PORT is not specified in the config
+const PORT = process.env.PORT || 6000; // backup the port with 6000 if PORT is not specified in the config
 
 cloudinary.config({
     cloud_name:process.env.CLOUDINARY_CLOUD_NAME,
@@ -31,4 +31,12 @@ app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use("/api/messages", messageRoutes);
 
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+	// react app
+	app.get("*", (req, res) => {
+		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+	});
+}
 app.listen(PORT, () => console.log(`server started at http://localhost:${PORT} heyy`));

@@ -10,7 +10,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import postsAtom from "../atoms/postsAtom";
-
+import { IoArrowBack } from "react-icons/io5";
 const PostPage = () => {
 	const { user, loading } = useGetUserProfile();
 	const [posts, setPosts] = useRecoilState(postsAtom);

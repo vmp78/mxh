@@ -17,10 +17,10 @@ const Header = () => {
 	const setAuthScreen = useSetRecoilState(authScreenAtom);
 
 	return (
-		<Flex justifyContent={"space-between"} mt={6} mb='12'>
+		<Flex justifyContent={"space-between"} mt={8} mb='12'>
 			{user && (
 				<Link as={RouterLink} to='/'>
-					<AiFillHome size={24} />
+					<AiFillHome size={26} />
 				</Link>
 			)}
 			{!user && (
@@ -38,15 +38,15 @@ const Header = () => {
 			/>
 
 			{user && (
-				<Flex alignItems={"center"} gap={4}>
+				<Flex alignItems={"center"} gap={10}>
 					<Link as={RouterLink} to={`/${user.username}`}>
-						<RxAvatar size={24} />
+						<RxAvatar size={26} />
 					</Link>
 					<Link as={RouterLink} to={`/chat`}>
-						<BsFillChatQuoteFill size={20} />
+						<BsFillChatQuoteFill size={26} />
 					</Link>
 					<Link as={RouterLink} to={`/settings`}>
-						<MdOutlineSettings size={20} />
+						<MdOutlineSettings size={26} />
 					</Link>
 					<Button size={"xs"} onClick={logout}>
 						<FiLogOut size={20} />

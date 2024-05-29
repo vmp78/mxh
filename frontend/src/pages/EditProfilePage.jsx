@@ -10,13 +10,14 @@ import {
 	Avatar,
 	Center,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import usePreviewImg from "../hooks/usePreviewImg";
 import useShowToast from "../hooks/useShowToast";
 
-export default function UpdateProfilePage() {
+export default function EditProfilePage() {
 	const [user, setUser] = useRecoilState(userAtom);
 	const [inputs, setInputs] = useState({
 		name: user.name,
@@ -29,6 +30,7 @@ export default function UpdateProfilePage() {
 	const [updating, setUpdating] = useState(false);
 
 	const showToast = useShowToast();
+	const navigate = useNavigate();
 
 	const { handleImageChange, imgUrl } = usePreviewImg();
 
@@ -45,6 +47,7 @@ export default function UpdateProfilePage() {
 				body: JSON.stringify({ ...inputs, avatar: imgUrl }),
 			});
 			const data = await res.json(); // updated user object
+			console.log(data);
 			if (data.error) {
 				showToast("Error", data.error, "error");
 				return;
@@ -57,6 +60,9 @@ export default function UpdateProfilePage() {
 		} finally {
 			setUpdating(false);
 		}
+	};
+	const handleCancel = () => {
+		navigate(-1); // Navigate back to the previous page
 	};
 	return (
 		<form onSubmit={handleSubmit}>
@@ -144,7 +150,7 @@ export default function UpdateProfilePage() {
 							_hover={{
 								bg: "red.500",
 							}}
-						>
+						onClick={handleCancel}>
 							Cancel
 						</Button>
 						<Button

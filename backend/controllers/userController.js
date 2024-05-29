@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import genTokenAndSetCookie from '../utils/helpers/genTokenAndSetCookie.js';
 import { v2 as cloudinary } from 'cloudinary';
 import mongoose from 'mongoose';
+import Post from "../models/postModel.js";
 
 const getUserProfile = async (req, res) => {
     // fetch userProfile either with username or userId

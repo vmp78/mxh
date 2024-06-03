@@ -59,7 +59,7 @@ export default function EditProfilePage() {
 			showToast("Error", error, "error");
 		} finally {
 			setUpdating(false);
-		}
+		}navigate(-1); 
 	};
 	const handleCancel = () => {
 		navigate(-1); // Navigate back to the previous page

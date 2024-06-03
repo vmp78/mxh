@@ -10,7 +10,6 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import postsAtom from "../atoms/postsAtom";
-import { IoArrowBack } from "react-icons/io5";
 const PostPage = () => {
 	const { user, loading } = useGetUserProfile();
 	const [posts, setPosts] = useRecoilState(postsAtom);
@@ -40,7 +39,7 @@ const PostPage = () => {
 	}, [showToast, pid, setPosts]);
 
 	const handleDeletePost = async () => {
-		try { 
+		try {
 			if (!window.confirm("Are you sure you want to delete this post?")) return;
 
 			const res = await fetch(`/api/posts/${currentPost._id}`, {
@@ -66,8 +65,13 @@ const PostPage = () => {
 		);
 	}
 
+	if (!user || !posts) {
+		return (
+			<Flex fontWeight={"600"} fontSize={"30"} textColor={" rgb(100 116 139)"}>User not found!!!</Flex>
+		)
+	}
+
 	if (!currentPost) return null;
-	console.log("currentPost", currentPost);
 
 	return (
 		<>
@@ -115,13 +119,15 @@ const PostPage = () => {
 			</Flex>
 
 			<Divider my={4} />
-			{currentPost.replies.map((reply) => (
-				<Comment
-					key={reply._id}
-					reply={reply}
-					lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
-				/>
-			))}
+			{currentPost.replies.map((reply) => {
+				return (
+					<Comment
+						key={reply._id}
+						reply={reply}
+						lastReply={reply._id === currentPost.replies[currentPost.replies.length - 1]._id}
+					/>
+				)
+			})}
 		</>
 	);
 };

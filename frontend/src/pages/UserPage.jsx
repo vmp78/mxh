@@ -22,7 +22,6 @@ const UserPage = () => {
 			try {
 				const res = await fetch(`/api/posts/user/${username}`);
 				const data = await res.json();
-				console.log(data);
 				setPosts(data);
 			} catch (error) {
 				showToast("Error", error.message, "error");
@@ -43,7 +42,9 @@ const UserPage = () => {
 		);
 	}
 
-	if (!user && !loading) return <h1>User not found</h1>;
+	if (!user && !loading) return  (
+		<Flex  fontWeight={"600"} fontSize={"30"} textColor={" rgb(100 116 139)"}>User not found!!!</Flex>
+	)
 
 	return (
 		<>

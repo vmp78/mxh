@@ -55,7 +55,6 @@ export default function EditProfilePage() {
             showToast('Success', 'Profile updated successfully', 'success');
             setUser(data);
             localStorage.setItem('user-threads', JSON.stringify(data));
-            navigate(`/${inputs.username}`);
         } catch (error) {
             showToast('Error', error, 'error');
         } finally {

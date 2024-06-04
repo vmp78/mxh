@@ -1,6 +1,6 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { CSSReset, Flex, IconButton, Link, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
-import { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { LuLogOut, LuMessageCircle, LuSettings, LuUser } from 'react-icons/lu';
 import { Link as RouterLink, useLocation } from 'react-router-dom';

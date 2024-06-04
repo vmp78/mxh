@@ -1,12 +1,15 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { CSSReset, Flex, IconButton, Input, Link, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import { CSSReset, Flex, IconButton, Link, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { LuLogOut, LuMessageCircle, LuSettings, LuUser } from 'react-icons/lu';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import authScreenAtom from '../atoms/authAtom';
 import userAtom from '../atoms/userAtom';
 import useLogout from '../hooks/useLogout';
+import SearchBar from './SearchBar';
+import SearchResultList from './SearchResultList';
 
 const MenuItemHoverStyles = {
     _hover: {
@@ -15,9 +18,18 @@ const MenuItemHoverStyles = {
 };
 
 const Header = () => {
+    const [loading, setLoading] = useState(false);
+    const [reset, setReset] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [input, setInput] = useState('');
     const user = useRecoilValue(userAtom);
     const logout = useLogout();
     const setAuthScreen = useSetRecoilState(authScreenAtom);
+    const location = useLocation();
+
+    useLayoutEffect(() => {
+        if (!reset) setReset(!reset);
+    }, [location]);
 
     return (
         <>
@@ -42,7 +54,21 @@ const Header = () => {
                     </Link>
                 )}
 
-                {user && <Input placeholder="Search for an account" w="400px" />}
+                {user && (
+                    <Flex position="relative">
+                        <SearchBar
+                            w={'400px'}
+                            setUsers={setUsers}
+                            setInput={setInput}
+                            setLoading={setLoading}
+                            reset={reset}
+                            location={location}
+                        />
+                        {users && users.length >= 0 && input.length > 0 && (
+                            <SearchResultList users={users} w={'400px'} loading={loading} />
+                        )}
+                    </Flex>
+                )}
 
                 {user && (
                     <Menu>

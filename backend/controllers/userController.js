@@ -3,7 +3,22 @@ import bcrypt from 'bcryptjs';
 import genTokenAndSetCookie from '../utils/helpers/genTokenAndSetCookie.js';
 import { v2 as cloudinary } from 'cloudinary';
 import mongoose from 'mongoose';
-import Post from "../models/postModel.js";
+import Post from '../models/postModel.js';
+
+const searchUser = async (req, res) => {
+    const { query } = req.params;
+    try {
+        const users = await User.find({
+            username: { $regex: `^${query}`, $options: 'i' },
+        })
+            .select('-password')
+            .select('-updatedAt');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log('Error in searchUser: ' + error.message);
+    }
+};
 
 const getUserProfile = async (req, res) => {
     // fetch userProfile either with username or userId
@@ -11,18 +26,18 @@ const getUserProfile = async (req, res) => {
     const { query } = req.params;
     try {
         let user;
-        
+
         //query is userId
-        if(mongoose.Types.ObjectId.isValid(query)){
-            user = await User.findOne({_id: query }).select("-password").select("-updateAt");
-        }else{
+        if (mongoose.Types.ObjectId.isValid(query)) {
+            user = await User.findOne({ _id: query }).select('-password').select('-updateAt');
+        } else {
             // query is username
-            user = await User.findOne({username: query }).select("-password").select("-updateAt");
+            user = await User.findOne({ username: query }).select('-password').select('-updateAt');
         }
 
         if (!user) return res.status(400).json({ error: 'User not found!' });
 
-        res.status(200).json( user );
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ error: error.message });
         console.log('Error in getUserProfile: ' + error.message);
@@ -140,106 +155,114 @@ const followUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-	const { name, email, username, password, bio } = req.body;
-	let { avatar } = req.body;
+    const { name, email, username, password, bio } = req.body;
+    let { avatar } = req.body;
 
-	const userId = req.user._id;
-	try {
-		let user = await User.findById(userId);
-		if (!user) return res.status(400).json({ error: "User not found" });
+    const userId = req.user._id;
+    try {
+        let user = await User.findById(userId);
+        if (!user) return res.status(400).json({ error: 'User not found' });
 
-		if (req.params.id !== userId.toString())
-			return res.status(400).json({ error: "You cannot update other user's profile" });
+        if (req.params.id !== userId.toString())
+            return res.status(400).json({ error: "You cannot update other user's profile" });
 
-		if (password) {
-			const salt = await bcrypt.genSalt(10);
-			const hashedPassword = await bcrypt.hash(password, salt);
-			user.password = hashedPassword;
-		}
+        if (password) {
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+            user.password = hashedPassword;
+        }
 
-		if (avatar) {
-			if (user.avatar) {
-				await cloudinary.uploader.destroy(user.avatar.split("/").pop().split(".")[0]);
-			}
+        if (avatar) {
+            if (user.avatar) {
+                await cloudinary.uploader.destroy(user.avatar.split('/').pop().split('.')[0]);
+            }
 
-			const uploadedResponse = await cloudinary.uploader.upload(avatar);
-			avatar = uploadedResponse.secure_url;
-		}
+            const uploadedResponse = await cloudinary.uploader.upload(avatar);
+            avatar = uploadedResponse.secure_url;
+        }
 
-		user.name = name || user.name;
-		user.email = email || user.email;
-		user.username = username || user.username;
-		user.avatar = avatar || user.avatar;
-		user.bio = bio || user.bio;
+        user.name = name || user.name;
+        user.email = email || user.email;
+        user.username = username || user.username;
+        user.avatar = avatar || user.avatar;
+        user.bio = bio || user.bio;
 
-		user = await user.save();
+        user = await user.save();
 
-		// Find all posts that this user replied and update username and userAvatar fields
-		await Post.updateMany(
-			{ "replies.userId": userId },
-			{
-				$set: {
-					"replies.$[reply].username": user.username,
-					"replies.$[reply].userAvatar": user.avatar,
-				},
-			},
-			{ arrayFilters: [{ "reply.userId": userId }] }
-		);
+        // Find all posts that this user replied and update username and userAvatar fields
+        await Post.updateMany(
+            { 'replies.userId': userId },
+            {
+                $set: {
+                    'replies.$[reply].username': user.username,
+                    'replies.$[reply].userAvatar': user.avatar,
+                },
+            },
+            { arrayFilters: [{ 'reply.userId': userId }] },
+        );
 
-		// password should be null in response
-		user.password = null;
+        // password should be null in response
+        user.password = null;
 
-		res.status(200).json(user);
-	} catch (err) {
-		res.status(500).json({ error: err.message });
-		console.log("Error in updateUser: ", err.message);
-	}
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+        console.log('Error in updateUser: ', err.message);
+    }
 };
 
-
-
 const getSuggestedUsers = async (req, res) => {
-	try {
-		// exclude the current user from suggested users array and exclude users that current user is already following
-		const userId = req.user._id;
+    try {
+        // exclude the current user from suggested users array and exclude users that current user is already following
+        const userId = req.user._id;
 
-		const usersFollowedByYou = await User.findById(userId).select("following");
+        const usersFollowedByYou = await User.findById(userId).select('following');
 
-		const users = await User.aggregate([
-			{
-				$match: {
-					_id: { $ne: userId },
-				},
-			},
-			{
-				$sample: { size: 10 },
-			},
-		]);
-		const filteredUsers = users.filter((user) => !usersFollowedByYou.following.includes(user._id));
-		const suggestedUsers = filteredUsers.slice(0, 4);
+        const users = await User.aggregate([
+            {
+                $match: {
+                    _id: { $ne: userId },
+                },
+            },
+            {
+                $sample: { size: 10 },
+            },
+        ]);
+        const filteredUsers = users.filter((user) => !usersFollowedByYou.following.includes(user._id));
+        const suggestedUsers = filteredUsers.slice(0, 4);
 
-		suggestedUsers.forEach((user) => (user.password = null));
+        suggestedUsers.forEach((user) => (user.password = null));
 
-		res.status(200).json(suggestedUsers);
-	} catch (error) {
-		res.status(500).json({ error: error.message });
-	}
+        res.status(200).json(suggestedUsers);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 const freezeAccount = async (req, res) => {
-	try {
-		const user = await User.findById(req.user._id);
-		if (!user) {
-			return res.status(400).json({ error: "User not found" });
-		}
+    try {
+        const user = await User.findById(req.user._id);
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
 
-		user.isFrozen = true;
-		await user.save();
+        user.isFrozen = true;
+        await user.save();
 
-		res.status(200).json({ success: true });
-	} catch (error) {
-		res.status(500).json({ error: error.message });
-	}
+        res.status(200).json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
-export { signupUser, loginUser, logoutUser, followUser, updateUser, getUserProfile, getSuggestedUsers, freezeAccount,};
+export {
+    signupUser,
+    loginUser,
+    logoutUser,
+    followUser,
+    updateUser,
+    getUserProfile,
+    getSuggestedUsers,
+    freezeAccount,
+    searchUser,
+};

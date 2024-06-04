@@ -1,6 +1,6 @@
 import { Input } from '@chakra-ui/react';
+import { useEffect, useRef } from 'react';
 import useShowToast from '../hooks/useShowToast';
-import { useState, useEffect, useRef } from 'react';
 
 const SearchBar = ({ setUsers, setInput, setLoading, w, reset, location }) => {
     const showToast = useShowToast();
@@ -9,6 +9,7 @@ const SearchBar = ({ setUsers, setInput, setLoading, w, reset, location }) => {
     useEffect(() => {
         if (reset) {
             setUsers([]);
+            setInput('');
             r.current.value = '';
         }
     }, [location]);

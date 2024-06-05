@@ -4,8 +4,7 @@ import { useLayoutEffect, useState } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { LuLogOut, LuMessageCircle, LuSettings, LuUser } from 'react-icons/lu';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import authScreenAtom from '../atoms/authAtom';
+import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import useLogout from '../hooks/useLogout';
 import SearchBar from './SearchBar';
@@ -24,7 +23,6 @@ const Header = () => {
     const [input, setInput] = useState('');
     const user = useRecoilValue(userAtom);
     const logout = useLogout();
-    const setAuthScreen = useSetRecoilState(authScreenAtom);
     const location = useLocation();
 
     useLayoutEffect(() => {
@@ -46,11 +44,6 @@ const Header = () => {
                 {user && (
                     <Link as={RouterLink} to="/">
                         <AiFillHome size={26} />
-                    </Link>
-                )}
-                {!user && (
-                    <Link as={RouterLink} to={'/auth'} onClick={() => setAuthScreen('login')}>
-                        Login
                     </Link>
                 )}
 
@@ -92,12 +85,6 @@ const Header = () => {
                             </MenuItem>
                         </MenuList>
                     </Menu>
-                )}
-
-                {!user && (
-                    <Link as={RouterLink} to={'/auth'} onClick={() => setAuthScreen('signup')}>
-                        Sign up
-                    </Link>
                 )}
             </Flex>
         </>

@@ -71,7 +71,7 @@ const Header = () => {
                                 <LuUser size={26} />
                                 <Text ml={2}>Profile</Text>
                             </MenuItem>
-                            <MenuItem as={RouterLink} to={`/chat`} bg="black" _hover={MenuItemHoverStyles}>
+                            <MenuItem as={RouterLink} to={`/${user.username}`} bg="black" _hover={MenuItemHoverStyles}>
                                 <LuMessageCircle size={26} />
                                 <Text ml={2}>Chat</Text>
                             </MenuItem>

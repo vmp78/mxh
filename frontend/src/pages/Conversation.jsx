@@ -7,22 +7,14 @@ import {
 	Stack,
 	Text,
 	WrapItem,
-	useColorMode,
+	
 	useColorModeValue,
 } from "@chakra-ui/react";
-import { useRecoilState, useRecoilValue } from "recoil";
-import userAtom from "../atoms/userAtom";
-import { BsCheck2All, BsFillImageFill } from "react-icons/bs";
-import { selectedConversationAtom } from "../atoms/messagesAtom";
+import { BsCheck2All, LuMessageCircle } from "react-icons/bs";
+
 
 const Conversation = ({ conversation, isOnline }) => {
-	const user = conversation.participants[0];
-	const currentUser = useRecoilValue(userAtom);
-	const lastMessage = conversation.lastMessage;
-	const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
-	const colorMode = useColorMode();
-
-	console.log("selectedConverstion", selectedConversation);
+	
 	return (
 		<Flex
 			gap={4}
@@ -37,7 +29,7 @@ const Conversation = ({ conversation, isOnline }) => {
 				setSelectedConversation({
 					_id: conversation._id,
 					userId: user._id,
-					avatar: user.avatar,
+					userProfilePic: user.profilePic,
 					username: user.username,
 					mock: conversation.mock,
 				})
@@ -54,7 +46,7 @@ const Conversation = ({ conversation, isOnline }) => {
 						sm: "sm",
 						md: "md",
 					}}
-					src={user.avatar}
+					src={user.profilePic}
 				>
 					{isOnline ? <AvatarBadge boxSize='1em' bg='green.500' /> : ""}
 				</Avatar>
@@ -74,7 +66,7 @@ const Conversation = ({ conversation, isOnline }) => {
 					)}
 					{lastMessage.text.length > 18
 						? lastMessage.text.substring(0, 18) + "..."
-						: lastMessage.text || <BsFillImageFill size={16} />}
+						: lastMessage.text || <LuMessageCircle size={16} />}
 				</Text>
 			</Stack>
 		</Flex>

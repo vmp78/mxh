@@ -8,7 +8,7 @@ import MessageContainer from "../components/MessageContainer";
 
 const ChatPage = () => {
 	
-
+	
 	return (
 		<Box
 			position={"absolute"}

@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import messageRoutes from "./routes/messageRoutes.js";
 import {v2 as cloudinary} from "cloudinary";
+import { app, server } from './socket/socket.js';
 
 dotenv.config(); // to read .env file
 
@@ -39,4 +40,4 @@ if (process.env.NODE_ENV === "production") {
 		res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
 	});
 }
-app.listen(PORT, () => console.log(`server started at http://localhost:${PORT} heyy`));
+server.listen(PORT, () => console.log(`server started at http://localhost:${PORT} heyy`));

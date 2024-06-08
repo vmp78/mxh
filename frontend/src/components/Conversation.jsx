@@ -11,10 +11,18 @@ import {
 	useColorModeValue,
 } from "@chakra-ui/react";
 import { BsCheck2All, LuMessageCircle } from "react-icons/bs";
-
+import { useRecoilState, useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
+import { selectedConversationAtom } from "../atoms/messagesAtom";
 
 const Conversation = ({ conversation, isOnline }) => {
-	
+	const user = conversation.participants[0];
+	const currentUser = useRecoilValue(userAtom);
+	const lastMessage = conversation.lastMessage;
+	const [selectedConversation, setSelectedConversation] = useRecoilState(selectedConversationAtom);
+	const colorMode = useColorMode();
+
+	console.log("selectedConverstion", selectedConversation);
 	return (
 		<Flex
 			gap={4}

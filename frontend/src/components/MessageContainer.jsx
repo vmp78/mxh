@@ -1,13 +1,40 @@
 import { Avatar, Divider, Flex, Image, Skeleton, SkeletonCircle, Text, useColorModeValue } from "@chakra-ui/react";
 import Message from "./Message";
 import MessageInput from "./MessageInput";
-
-
-
+import { useEffect, useState } from "react";
+import useShowToast from "../hooks/useShowToast";
+import { selectedConversationAtom } from "../atoms/messagesAtom";
+import { useRecoilValue } from "recoil";
+import userAtom from "../atoms/userAtom";
 
 const MessageContainer = () => {
-	
+	const showToast = useShowToast();
+	const selectedConversation = useRecoilValue(selectedConversationAtom);
+	const [loadingMessages, setLoadingMessages] = useState(true);
+	const [messages, setMessages] = useState([]);
+	const currentUser = useRecoilValue(userAtom);
 
+	useEffect(() => {
+		const getMessages = async () => {
+			setLoadingMessages(true);
+			setMessages([]);
+			try {
+				if (selectedConversation.mock) return;
+				const res = await fetch(`/api/messages/${selectedConversation.userId}`);
+				const data = await res.json();
+				if (data.error) {
+					showToast("Error", data.error, "error");
+					return;
+				}
+				setMessages(data);
+			} catch (error) {
+				showToast("Error", error.message, "error");
+			} finally {
+				setLoadingMessages(false);
+			}
+		};
+		getMessages();
+	}, [showToast, selectedConversation.userId, selectedConversation.mock]);
 
 
 	return (
@@ -53,8 +80,6 @@ const MessageContainer = () => {
 					messages.map((message) => (
 						<Flex
 							key={message._id}
-							direction={"column"}
-							ref={messages.length - 1 === messages.indexOf(message) ? messageEndRef : null}
 						>
 							<Message message={message} ownMessage={currentUser._id === message.sender} />
 						</Flex>

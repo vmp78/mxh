@@ -89,11 +89,16 @@ const loginUser = async (req, res) => {
 
         const user = await User.findOne({ username });
         if (!user) {
-            return res.status(400).json({ message: 'Username not exist' });
+            return res.status(400).json({ error: 'Invalid username' });
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) return res.status(400).json({ error: 'Invalid password' });
+
+        if (user.isFrozen) {
+            user.isFrozen = false;
+            user.save();
+        }
 
         genTokenAndSetCookie(user._id, res);
 

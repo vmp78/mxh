@@ -38,7 +38,7 @@ const HomePage = () => {
                 {!loading && posts.length === 0 && (
                     <Flex maxW={'sm'} direction={'column'} justify={'center'} alignItems={'center'} mx={'auto'}>
                         <Image
-                            src="../../public/empty.png"
+                            src="/empty.png"
                             alt="Empty post feed image"
                             borderRadius="lg"
                             maxW={'xs'}

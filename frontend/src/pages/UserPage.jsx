@@ -46,7 +46,7 @@ const UserPage = () => {
         return (
             <Flex maxW={'xs'} direction={'column'} justify={'center'} alignItems={'center'} mx={'auto'}>
                 <Image
-                    src="../../public/frozen.png"
+                    src="/frozen.png"
                     alt="Frozen account image"
                     borderRadius="lg"
                     maxW={'xs'}

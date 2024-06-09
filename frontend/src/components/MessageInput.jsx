@@ -15,17 +15,22 @@ import {
 } from "@chakra-ui/react";
 
 import { IoSendSharp } from "react-icons/io5";
-import { LuMessageCircle } from "react-icons/bs";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import useShowToast from "../hooks/useShowToast";
 import { conversationsAtom, selectedConversationAtom } from "../atoms/messagesAtom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+import { BsFillImageFill } from "react-icons/bs";
+import usePreviewImg from "../hooks/usePreviewImg";
 
 const MessageInput = ({ setMessages }) => {
 	const [messageText, setMessageText] = useState("");
 	const showToast = useShowToast();
 	const selectedConversation = useRecoilValue(selectedConversationAtom);
 	const setConversations = useSetRecoilState(conversationsAtom);
+	const imageRef = useRef(null);
+	const { onClose } = useDisclosure();
+	const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
+	const [isSending, setIsSending] = useState(false);
 	
 	const handleSendMessage = async (e) => {
 		e.preventDefault();
@@ -94,7 +99,7 @@ const MessageInput = ({ setMessages }) => {
 				</InputGroup>
 			</form>
 			<Flex flex={5} cursor={"pointer"}>
-				<LuMessageCircle size={20} onClick={() => imageRef.current.click()} />
+				<BsFillImageFill size={20} onClick={() => imageRef.current.click()} />
 				<Input type={"file"} hidden ref={imageRef} onChange={handleImageChange} />
 			</Flex>
 			<Modal

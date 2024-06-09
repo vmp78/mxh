@@ -1,28 +1,24 @@
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
-    Flex,
     Box,
+    Button,
+    Flex,
     FormControl,
     FormLabel,
+    Heading,
     Input,
     InputGroup,
     InputRightElement,
     Stack,
-    Button,
-    Heading,
-    Text,
-    useColorModeValue,
-    Link,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useSetRecoilState } from 'recoil';
 import authScreenAtom from '../atoms/authAtom';
-import useShowToast from '../hooks/useShowToast';
 import userAtom from '../atoms/userAtom';
+import useShowToast from '../hooks/useShowToast';
 
 export default function LoginCard() {
     const [showPassword, setShowPassword] = useState(false);
-    const setAuthScreen = useSetRecoilState(authScreenAtom);
     const setUser = useSetRecoilState(userAtom);
     const [loading, setLoading] = useState(false);
     const showToast = useShowToast();
@@ -59,20 +55,30 @@ export default function LoginCard() {
         <Flex align={'center'} justify={'center'}>
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Box rounded={'lg'} boxShadow={'lg'} p={8} w={{ base: 'full', sm: '400px' }} bgColor={'gray.900'}>
-                    <Stack spacing={4}>
-                        <Heading fontSize={'4xl'} textAlign={'center'}>
-                            Log in
+                    <Stack spacing={8} mb={4}>
+                        <Heading fontSize={'3xl'} textAlign={'center'}>
+                            Reset password
                         </Heading>
                         <FormControl isRequired>
-                            <FormLabel>Username</FormLabel>
-                            <Input
-                                type="text"
-                                onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
-                                value={inputs.username}
-                            />
+                            <FormLabel>New Password</FormLabel>
+                            <InputGroup>
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
+                                    value={inputs.password}
+                                />
+                                <InputRightElement h={'full'}>
+                                    <Button
+                                        variant={'ghost'}
+                                        onClick={() => setShowPassword((showPassword) => !showPassword)}
+                                    >
+                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                    </Button>
+                                </InputRightElement>
+                            </InputGroup>
                         </FormControl>
                         <FormControl isRequired>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel>Confirm Password</FormLabel>
                             <InputGroup>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
@@ -101,25 +107,8 @@ export default function LoginCard() {
                                 onClick={handleLogin}
                                 isLoading={loading}
                             >
-                                Log in
+                                Change
                             </Button>
-                        </Stack>
-                        <Stack pt={6}>
-                            <Text align={'center'}>
-                                Don't have an account?{' '}
-                                <Text
-                                    display={'inline'}
-                                    _hover={{
-                                        cursor: 'pointer',
-                                        color: 'blue.300',
-                                    }}
-                                    color={'blue.400'}
-                                    onClick={() => setAuthScreen('signup')}
-                                    ml={1}
-                                >
-                                    Sign up!
-                                </Text>
-                            </Text>
                         </Stack>
                     </Stack>
                 </Box>

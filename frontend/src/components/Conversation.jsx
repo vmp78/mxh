@@ -37,7 +37,7 @@ const Conversation = ({ conversation, isOnline }) => {
 				setSelectedConversation({
 					_id: conversation._id,
 					userId: user._id,
-					userProfilePic: user.profilePic,
+					userAvatar: user.avatar,
 					username: user.username,
 					mock: conversation.mock,
 				})
@@ -54,7 +54,7 @@ const Conversation = ({ conversation, isOnline }) => {
 						sm: "sm",
 						md: "md",
 					}}
-					src={user.profilePic}
+					src={user.avatar}
 				>
 					{isOnline ? <AvatarBadge boxSize='1em' bg='green.500' /> : ""}
 				</Avatar>

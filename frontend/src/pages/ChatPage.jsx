@@ -90,7 +90,7 @@ const ChatPage = () => {
 					_id: conversationAlreadyExists._id,
 					userId: searchedUser._id,
 					username: searchedUser.username,
-					userProfilePic: searchedUser.profilePic,
+					userAvatar: searchedUser.avatar,
 				});
 				return;
 			}
@@ -106,7 +106,7 @@ const ChatPage = () => {
 					{
 						_id: searchedUser._id,
 						username: searchedUser.username,
-						profilePic: searchedUser.profilePic,
+						avatar: searchedUser.avatar,
 					},
 				],
 			};

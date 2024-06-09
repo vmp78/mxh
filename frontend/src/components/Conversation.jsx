@@ -7,10 +7,10 @@ import {
 	Stack,
 	Text,
 	WrapItem,
-	
+	useColorMode,
 	useColorModeValue,
 } from "@chakra-ui/react";
-import { BsCheck2All, LuMessageCircle } from "react-icons/bs";
+import { BsCheck2All, BsImageFill} from "react-icons/bs";
 import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { selectedConversationAtom } from "../atoms/messagesAtom";
@@ -74,8 +74,8 @@ const Conversation = ({ conversation, isOnline }) => {
 					)}
 					{lastMessage.text.length > 18
 						? lastMessage.text.substring(0, 18) + "..."
-						: lastMessage.text || <LuMessageCircle size={16} />}
-				</Text>
+						: lastMessage.text || <BsImageFill size={16} />}
+				</Text>	
 			</Stack>
 		</Flex>
 	);

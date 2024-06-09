@@ -12,7 +12,7 @@ dotenv.config(); // to read .env file
 
 connectDB();
 
-const app = express(); // create express server
+
 
 const PORT = process.env.PORT || 6000; // backup the port with 6000 if PORT is not specified in the config
 

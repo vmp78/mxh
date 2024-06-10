@@ -1,7 +1,8 @@
 import { Server } from "socket.io";
 import http from "http";
 import express from "express";
-
+import Message from "../models/messageModel.js";
+import Conversation from "../models/conversationModel.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -32,7 +33,7 @@ io.on("connection", (socket) => {
 			io.to(userSocketMap[userId]).emit("messagesSeen", { conversationId });
 		} catch (error) {
 			console.log(error);
-		}
+		}	
 	});
 	
 	socket.on("disconnect", () => {

@@ -1,18 +1,19 @@
 import Conversation from '../models/conversationModel.js';
 import Message from '../models/messageModel.js';
-import { getRecipientSocketId, io } from "../socket/socket.js";
-import { v2 as cloudinary } from "cloudinary";
+import { getRecipientSocketId, io } from '../socket/socket.js';
+import { v2 as cloudinary } from 'cloudinary';
 
 async function sendMessage(req, res) {
     try {
         const { recipientId, message } = req.body;
-        let {img} = req.body;
+        let { img } = req.body;
         const senderId = req.user._id;
 
         let conversation = await Conversation.findOne({
             participants: { $all: [senderId, recipientId] },
         });
 
+        // create a new conversation for first message
         if (!conversation) {
             conversation = new Conversation({
                 participants: [senderId, recipientId],
@@ -24,16 +25,17 @@ async function sendMessage(req, res) {
             await conversation.save();
         }
 
+        // update new message for existence conversation
         if (img) {
-			const uploadedResponse = await cloudinary.uploader.upload(img);
-			img = uploadedResponse.secure_url;
-		}
+            const uploadedResponse = await cloudinary.uploader.upload(img);
+            img = uploadedResponse.secure_url;
+        }
 
         const newMessage = new Message({
             conversationId: conversation._id,
             sender: senderId,
             text: message,
-            img: img || "",
+            img: img || '',
         });
 
         await Promise.all([
@@ -47,9 +49,9 @@ async function sendMessage(req, res) {
         ]);
 
         const recipientSocketId = getRecipientSocketId(recipientId);
-		if (recipientSocketId) {
-			io.to(recipientSocketId).emit("newMessage", newMessage);
-		}
+        if (recipientSocketId) {
+            io.to(recipientSocketId).emit('newMessage', newMessage);
+        }
 
         res.status(201).json(newMessage);
     } catch (error) {
@@ -83,13 +85,15 @@ async function getConversations(req, res) {
     const userId = req.user._id;
     try {
         const conversations = await Conversation.find({ participants: userId }).populate({
+            // find in participants for a reference to user model
             path: 'participants',
             select: 'username avatar',
         });
 
+        // remove current user from participants array
         conversations.forEach((conversation) => {
             conversation.participants = conversation.participants.filter(
-                (participant) => participant._id.toString() !== userId.toString()
+                (participant) => participant._id.toString() !== userId.toString(),
             );
         });
 

@@ -4,6 +4,8 @@ import genTokenAndSetCookie from '../utils/helpers/genTokenAndSetCookie.js';
 import { v2 as cloudinary } from 'cloudinary';
 import mongoose from 'mongoose';
 import Post from '../models/postModel.js';
+import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
 
 const searchUser = async (req, res) => {
     const { query } = req.params;
@@ -126,6 +128,104 @@ const logoutUser = (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
         console.log('Error in logoutUser: ' + error.message);
+    }
+};
+
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const oldUser = await User.findOne({ email: email });
+
+        if (!oldUser) {
+            return res.status(400).json({ error: 'User not found!' });
+        }
+
+        const secret = process.env.JWT_SECRET + oldUser.password;
+        const token = jwt.sign({ email: oldUser.email, id: oldUser._id }, secret, {
+            expiresIn: '5m',
+        });
+
+        const url = `http://localhost:5000/auth/reset-password/${oldUser._id}/${token}`;
+        // const emailHTML = render(<Email email={email} username={oldUser.username} url={url} />);
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAIL_PASSWORD,
+            },
+        });
+        // var mailOptions = {
+        //     from: 'hanoi2003.a@gmail.com',
+        //     to: email,
+        //     subject: 'Password Reset',
+        //     html: emailHTML,
+        // };
+        var mailOptions = {
+            from: 'hanoi2003.a@gmail.com',
+            to: email,
+            subject: 'Password Reset',
+            text: url,
+        };
+
+        await transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                res.status(500).json({ error: error });
+            } else {
+                res.status(200).json({
+                    message: `Email sent to: ${email}`,
+                });
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log('Error in forgotPassword: ' + error.message);
+    }
+};
+
+const verifyResetPasswordToken = async (req, res) => {
+    const { id, token } = req.params;
+    const oldUser = await User.findOne({ _id: id });
+    if (!oldUser) {
+        return res.json({ status: 'User Not found!' });
+    }
+    const secret = process.env.JWT_SECRET + oldUser.password;
+    try {
+        const verify = jwt.verify(token, secret);
+        res.status(200).json({ email: verify.email, status: 'Verified' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log('Error in verifyResetPasswordToken: ' + error.message);
+    }
+};
+
+const resetPassword = async (req, res) => {
+    const { userid, token } = req.params;
+    const { password } = req.body;
+
+    const oldUser = await User.findOne({ _id: userid });
+    if (!oldUser) {
+        return res.status(404).json({ error: `User ${userid} not found!` });
+    }
+
+    const secret = process.env.JWT_SECRET + oldUser.password;
+    try {
+        const verify = jwt.verify(token, secret);
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await User.updateOne(
+            {
+                _id: userid,
+            },
+            {
+                $set: {
+                    password: hashedPassword,
+                },
+            },
+        );
+        res.status(200).json({ email: verify.email, status: 'Password changed successfully!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log('Error in resetPassword: ' + error.message);
     }
 };
 
@@ -270,4 +370,7 @@ export {
     getSuggestedUsers,
     freezeAccount,
     searchUser,
+    forgotPassword,
+    verifyResetPasswordToken,
+    resetPassword,
 };

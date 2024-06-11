@@ -13,24 +13,31 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
-import authScreenAtom from '../atoms/authAtom';
 import userAtom from '../atoms/userAtom';
 import useShowToast from '../hooks/useShowToast';
+import { redirect, useNavigate, useParams } from 'react-router-dom';
 
-export default function LoginCard() {
+export default function ResetPasswordCard() {
+    const { userid, token } = useParams();
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const setUser = useSetRecoilState(userAtom);
     const [loading, setLoading] = useState(false);
     const showToast = useShowToast();
+    const navigate = useNavigate();
 
     const [inputs, setInputs] = useState({
-        username: '',
         password: '',
+        confirmPassword: '',
     });
-    const handleLogin = async () => {
+    const handleResetPassword = async () => {
+        if (inputs.password !== inputs.confirmPassword) {
+            showToast('Error', 'Passwords do not match', 'error');
+            return;
+        }
         setLoading(true);
         try {
-            const res = await fetch('api/users/login', {
+            const res = await fetch(`/api/users/reset-password/${userid}/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,8 +49,8 @@ export default function LoginCard() {
                 showToast('Error', data.error, 'error');
                 return;
             }
-            localStorage.setItem('user-threads', JSON.stringify(data));
-            setUser(data);
+            showToast('Success', 'Password changed successfully', 'success');
+            navigate('/auth');
         } catch (error) {
             showToast('Error', error, 'error');
         } finally {
@@ -81,16 +88,18 @@ export default function LoginCard() {
                             <FormLabel>Confirm Password</FormLabel>
                             <InputGroup>
                                 <Input
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
-                                    value={inputs.password}
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })}
+                                    value={inputs.confirmPassword}
                                 />
                                 <InputRightElement h={'full'}>
                                     <Button
                                         variant={'ghost'}
-                                        onClick={() => setShowPassword((showPassword) => !showPassword)}
+                                        onClick={() =>
+                                            setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword)
+                                        }
                                     >
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                                        {showConfirmPassword ? <ViewIcon /> : <ViewOffIcon />}
                                     </Button>
                                 </InputRightElement>
                             </InputGroup>
@@ -104,7 +113,7 @@ export default function LoginCard() {
                                 _hover={{
                                     bg: 'gray.100',
                                 }}
-                                onClick={handleLogin}
+                                onClick={handleResetPassword}
                                 isLoading={loading}
                             >
                                 Change

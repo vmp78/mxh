@@ -15,7 +15,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useSetRecoilState } from 'recoil';
-import authScreenAtom from '../atoms/authAtom';
+import { authScreenAtom } from '../atoms/authAtom';
 import userAtom from '../atoms/userAtom';
 import useShowToast from '../hooks/useShowToast';
 

@@ -9,6 +9,9 @@ import {
     getSuggestedUsers,
     freezeAccount,
     searchUser,
+    forgotPassword,
+    verifyResetPasswordToken,
+    resetPassword,
 } from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -30,6 +33,15 @@ router.post('/login', loginUser);
 
 // Logout
 router.post('/logout', logoutUser);
+
+// Forgot password
+router.post('/forgot-password', forgotPassword);
+
+// Verify reset password token
+router.get('/reset-password/:userid/:token', verifyResetPasswordToken);
+
+// Reset password
+router.post('/reset-password/:userid/:token', resetPassword);
 
 // Follow/unfollow
 router.post('/follow/:id', protectRoute, followUser); // protectRoute use to prevent non login user from following/unfollowing

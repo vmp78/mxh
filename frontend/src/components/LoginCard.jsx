@@ -1,24 +1,26 @@
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
-    Flex,
     Box,
+    Button,
+    Flex,
     FormControl,
     FormLabel,
+    HStack,
+    Heading,
     Input,
     InputGroup,
     InputRightElement,
     Stack,
-    Button,
-    Heading,
     Text,
-    useColorModeValue,
-    Link,
+    Divider,
+    AbsoluteCenter,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useSetRecoilState } from 'recoil';
-import authScreenAtom from '../atoms/authAtom';
-import useShowToast from '../hooks/useShowToast';
+import { authScreenAtom } from '../atoms/authAtom';
 import userAtom from '../atoms/userAtom';
+import useShowToast from '../hooks/useShowToast';
 
 export default function LoginCard() {
     const [showPassword, setShowPassword] = useState(false);
@@ -34,7 +36,7 @@ export default function LoginCard() {
     const handleLogin = async () => {
         setLoading(true);
         try {
-            const res = await fetch('api/users/login', {
+            const res = await fetch('/api/users/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,7 +51,7 @@ export default function LoginCard() {
             localStorage.setItem('user-threads', JSON.stringify(data));
             setUser(data);
         } catch (error) {
-            showToast('Error', error, 'error');
+            showToast('Error', 'Internal server error', 'error');
         } finally {
             setLoading(false);
         }
@@ -104,23 +106,36 @@ export default function LoginCard() {
                                 Log in
                             </Button>
                         </Stack>
-                        <Stack pt={6}>
-                            <Text align={'center'}>
-                                Don't have an account?{' '}
-                                <Text
-                                    display={'inline'}
-                                    _hover={{
-                                        cursor: 'pointer',
-                                        color: 'blue.300',
-                                    }}
-                                    color={'blue.400'}
-                                    onClick={() => setAuthScreen('signup')}
-                                    ml={1}
-                                >
-                                    Sign up!
-                                </Text>
+                        <Stack pt={3} justify={'center'} align={'center'}>
+                            <Text
+                                color="gray.500"
+                                _hover={{
+                                    cursor: 'pointer',
+                                    color: 'gray.300',
+                                }}
+                            >
+                                <Link to={'/auth/forgot-password'}>Forgot password?</Link>
                             </Text>
                         </Stack>
+                        <Box position="relative" p={3}>
+                            <Divider />
+                            <AbsoluteCenter bg="gray.900" px="4" color={'gray.500'}>
+                                or
+                            </AbsoluteCenter>
+                        </Box>
+                        <HStack justify={'center'} align={'center'}>
+                            <Text align={'center'}>Don't have an account? </Text>
+                            <Text
+                                _hover={{
+                                    cursor: 'pointer',
+                                    color: 'blue.300',
+                                }}
+                                color={'blue.400'}
+                                onClick={() => setAuthScreen('signup')}
+                            >
+                                Sign up!
+                            </Text>
+                        </HStack>
                     </Stack>
                 </Box>
             </Stack>

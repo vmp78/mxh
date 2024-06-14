@@ -62,11 +62,11 @@ export default function LoginCard() {
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Box rounded={'lg'} boxShadow={'lg'} p={8} w={{ base: 'full', sm: '400px' }} bgColor={'gray.900'}>
                     <Stack spacing={4}>
-                        <Heading fontSize={'4xl'} textAlign={'center'}>
+                        <Heading fontSize={'4xl'} textAlign={'center'} color={'whitesmoke'}>
                             Log in
                         </Heading>
                         <FormControl isRequired>
-                            <FormLabel>Username</FormLabel>
+                            <FormLabel color={'whitesmoke'}>Username</FormLabel>
                             <Input
                                 type="text"
                                 onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
@@ -74,12 +74,13 @@ export default function LoginCard() {
                             />
                         </FormControl>
                         <FormControl isRequired>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel color={'whitesmoke'}>Password</FormLabel>
                             <InputGroup>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
                                     onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
                                     value={inputs.password}
+                                    color={'whitesmoke'}
                                 />
                                 <InputRightElement h={'full'}>
                                     <Button
@@ -124,7 +125,9 @@ export default function LoginCard() {
                             </AbsoluteCenter>
                         </Box>
                         <HStack justify={'center'} align={'center'}>
-                            <Text align={'center'}>Don't have an account? </Text>
+                            <Text align={'center'} color={'gray.500'}>
+                                Don't have an account?{' '}
+                            </Text>
                             <Text
                                 _hover={{
                                     cursor: 'pointer',

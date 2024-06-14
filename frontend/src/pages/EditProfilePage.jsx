@@ -22,9 +22,7 @@ export default function EditProfilePage() {
     const [inputs, setInputs] = useState({
         name: user.name,
         username: user.username,
-        email: user.email,
         bio: user.bio,
-        password: '',
     });
     const fileRef = useRef(null);
     const [updating, setUpdating] = useState(false);
@@ -47,7 +45,6 @@ export default function EditProfilePage() {
                 body: JSON.stringify({ ...inputs, avatar: imgUrl }),
             });
             const data = await res.json(); // updated user object
-            console.log(data);
             if (data.error) {
                 showToast('Error', data.error, 'error');
                 return;
@@ -55,6 +52,7 @@ export default function EditProfilePage() {
             showToast('Success', 'Profile updated successfully', 'success');
             setUser(data);
             localStorage.setItem('user-threads', JSON.stringify(data));
+            navigate(`/${user.username}`);
         } catch (error) {
             showToast('Error', error, 'error');
         } finally {
@@ -113,16 +111,6 @@ export default function EditProfilePage() {
                         />
                     </FormControl>
                     <FormControl>
-                        <FormLabel>Email address</FormLabel>
-                        <Input
-                            placeholder="your-email@example.com"
-                            value={inputs.email}
-                            onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
-                            _placeholder={{ color: 'gray.500' }}
-                            type="email"
-                        />
-                    </FormControl>
-                    <FormControl>
                         <FormLabel>Bio</FormLabel>
                         <Input
                             placeholder="Your bio."
@@ -130,16 +118,6 @@ export default function EditProfilePage() {
                             onChange={(e) => setInputs({ ...inputs, bio: e.target.value })}
                             _placeholder={{ color: 'gray.500' }}
                             type="text"
-                        />
-                    </FormControl>
-                    <FormControl>
-                        <FormLabel>Password</FormLabel>
-                        <Input
-                            placeholder="password"
-                            value={inputs.password}
-                            onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
-                            _placeholder={{ color: 'gray.500' }}
-                            type="password"
                         />
                     </FormControl>
                     <Stack spacing={6} direction={['column', 'row']}>

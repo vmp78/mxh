@@ -12,6 +12,7 @@ import {
     forgotPassword,
     verifyResetPasswordToken,
     resetPassword,
+    changePassword,
 } from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -42,6 +43,9 @@ router.get('/reset-password/:userid/:token', verifyResetPasswordToken);
 
 // Reset password
 router.post('/reset-password/:userid/:token', resetPassword);
+
+// Change password
+router.post('/change-password', protectRoute, changePassword);
 
 // Follow/unfollow
 router.post('/follow/:id', protectRoute, followUser); // protectRoute use to prevent non login user from following/unfollowing

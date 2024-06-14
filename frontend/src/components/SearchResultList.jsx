@@ -1,11 +1,12 @@
-import { Avatar, Box, Card, Flex, Spinner, Stack, StackDivider, Text } from '@chakra-ui/react';
+import { Avatar, Box, Card, Flex, Spinner, Stack, StackDivider, Text, useColorMode } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
 
 const SearchResultList = ({ users, w, loading }) => {
+    const { colorMode } = useColorMode();
     return (
         <Card
             id="searchResultList"
-            bgColor={'gray.dark'}
+            bgColor={colorMode === 'dark' ? 'black' : 'white'}
             position="absolute"
             top="100%"
             left="0"
@@ -15,26 +16,31 @@ const SearchResultList = ({ users, w, loading }) => {
             mt={2}
             p={2}
         >
-            <Stack divider={<StackDivider />}>
+            <Stack>
                 {users && !loading ? (
                     users.length > 0 ? (
                         users.map((user) => {
                             return (
                                 <Card
-                                    bgColor={'gray.dark'}
+                                    border={'none'}
+                                    bgColor={colorMode === 'dark' ? 'black' : 'white'}
                                     p={2}
-                                    _hover={{ bg: 'gray.light', cursor: 'pointer' }}
+                                    _hover={{ bg: colorMode === 'dark' ? 'gray.800' : 'gray.300', cursor: 'pointer' }}
                                     as={Link}
                                     to={`${user.username}`}
                                     key={user.username}
                                 >
-                                    <Flex align="center">
+                                    <Flex align="center" border={'none'}>
                                         <Avatar src={user.avatar} />
                                         <Box ml={2}>
-                                            <Text fontSize={'sm'} fontWeight={'bold'}>
+                                            <Text
+                                                fontSize={'sm'}
+                                                fontWeight={'bold'}
+                                                color={colorMode === 'dark' ? 'white' : 'black'}
+                                            >
                                                 {user.username}
                                             </Text>
-                                            <Text color={'gray.light'} fontSize={'sm'}>
+                                            <Text color={colorMode === 'dark' ? 'white' : 'black'} fontSize={'sm'}>
                                                 {user.name}
                                             </Text>
                                         </Box>

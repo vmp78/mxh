@@ -1,5 +1,23 @@
 import { HamburgerIcon } from '@chakra-ui/icons';
-import { CSSReset, Flex, IconButton, Link, Menu, MenuButton, MenuItem, MenuList, Text } from '@chakra-ui/react';
+import {
+    Box,
+    Drawer,
+    DrawerBody,
+    DrawerContent,
+    DrawerHeader,
+    DrawerOverlay,
+    Flex,
+    IconButton,
+    Link,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Text,
+    useColorMode,
+    useColorModeValue,
+    useDisclosure,
+} from '@chakra-ui/react';
 import { useLayoutEffect, useState } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { LuLogOut, LuMessageCircle, LuSettings, LuUser } from 'react-icons/lu';
@@ -9,14 +27,11 @@ import userAtom from '../atoms/userAtom';
 import useLogout from '../hooks/useLogout';
 import SearchBar from './SearchBar';
 import SearchResultList from './SearchResultList';
-
-const MenuItemHoverStyles = {
-    _hover: {
-        backgroundColor: 'gray.800',
-    },
-};
+import Settings from './Settings';
 
 const Header = () => {
+    const { colorMode } = useColorMode();
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [loading, setLoading] = useState(false);
     const [reset, setReset] = useState(false);
     const [users, setUsers] = useState([]);
@@ -25,20 +40,32 @@ const Header = () => {
     const logout = useLogout();
     const location = useLocation();
 
+    const MenuItemHoverStyles = {
+        _hover: {
+            backgroundColor: colorMode === 'dark' ? 'gray.900' : 'gray.100',
+        },
+    };
+
     useLayoutEffect(() => {
         if (!reset) setReset(!reset);
     }, [location]);
 
     return (
-        <>
-            <CSSReset />
+        <Box
+            position={'sticky'}
+            top={0}
+            pt={0.5}
+            pb={0.5}
+            zIndex={100}
+            bgColor={useColorModeValue('gray.100', '#101010')}
+        >
             <Flex
                 justifyContent="center"
                 ml={'auto'}
                 mr={'auto'}
                 maxW={{ base: '620px', md: '900px' }}
-                mt={6}
-                mb={10}
+                mt={5}
+                mb={5}
                 gap={20}
             >
                 {user && (
@@ -66,28 +93,56 @@ const Header = () => {
                 {user && (
                     <Menu>
                         <MenuButton as={IconButton} aria-label="Options" icon={<HamburgerIcon />} variant="outline" />
-                        <MenuList bg="black">
-                            <MenuItem as={RouterLink} to={`/${user.username}`} bg="black" _hover={MenuItemHoverStyles}>
+                        <MenuList bg={colorMode === 'dark' ? 'black' : 'white'}>
+                            <MenuItem
+                                as={RouterLink}
+                                to={`/${user.username}`}
+                                bg={colorMode === 'dark' ? 'black' : 'white'}
+                                _hover={MenuItemHoverStyles}
+                            >
                                 <LuUser size={26} />
                                 <Text ml={2}>Profile</Text>
                             </MenuItem>
-                            <MenuItem as={RouterLink} to={`/chat`} bg="black" _hover={MenuItemHoverStyles}>
+                            <MenuItem
+                                as={RouterLink}
+                                to={`/chat`}
+                                bg={colorMode === 'dark' ? 'black' : 'white'}
+                                _hover={MenuItemHoverStyles}
+                            >
                                 <LuMessageCircle size={26} />
                                 <Text ml={2}>Chat</Text>
                             </MenuItem>
-                            <MenuItem as={RouterLink} to={`/settings`} bg="black" _hover={MenuItemHoverStyles}>
+                            <MenuItem
+                                bg={colorMode === 'dark' ? 'black' : 'white'}
+                                _hover={MenuItemHoverStyles}
+                                onClick={onOpen}
+                            >
                                 <LuSettings size={26} />
                                 <Text ml={2}>Settings</Text>
                             </MenuItem>
-                            <MenuItem onClick={logout} bg="black" _hover={MenuItemHoverStyles}>
+                            <MenuItem
+                                onClick={logout}
+                                bg={colorMode === 'dark' ? 'black' : 'white'}
+                                _hover={MenuItemHoverStyles}
+                            >
                                 <LuLogOut size={26} />
                                 <Text ml={2}>Log out</Text>
                             </MenuItem>
                         </MenuList>
                     </Menu>
                 )}
+
+                <Drawer placement={'left'} size={'xs'} onClose={onClose} isOpen={isOpen}>
+                    <DrawerOverlay />
+                    <DrawerContent bgColor={colorMode === 'dark' ? 'gray.dark' : 'gray.200'}>
+                        <DrawerHeader borderBottomWidth="1px">Settings</DrawerHeader>
+                        <DrawerBody>
+                            <Settings />
+                        </DrawerBody>
+                    </DrawerContent>
+                </Drawer>
             </Flex>
-        </>
+        </Box>
     );
 };
 

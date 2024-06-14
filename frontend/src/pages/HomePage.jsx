@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Image, Spinner, Stack, Text } from '@chakra-ui/react';
+import { Box, Flex, Heading, Image, Spinner, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import postsAtom from '../atoms/postsAtom';
@@ -67,6 +67,9 @@ const HomePage = () => {
                     base: 'none',
                     md: 'block',
                 }}
+                position={'sticky'}
+                top={40}
+                bgColor={useColorModeValue('gray.100', '#101010')}
             >
                 <SuggestedUsers />
             </Box>

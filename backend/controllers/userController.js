@@ -229,6 +229,40 @@ const resetPassword = async (req, res) => {
     }
 };
 
+const changePassword = async (req, res) => {
+    const { password } = req.body;
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: 'Not logged in!' });
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // check the token to get the payload
+
+    const user = await User.findById(decoded.userId); // select anything but the password
+
+    // const oldUser = await User.findOne({ _id: userid });
+    // if (!oldUser) {
+    //     return res.status(404).json({ error: `User ${userid} not found!` });
+    // }
+
+    try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        await User.updateOne(
+            {
+                _id: user._id,
+            },
+            {
+                $set: {
+                    password: hashedPassword,
+                },
+            },
+        );
+        res.status(200).json({ status: 'Password changed successfully!' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log('Error in changePassword: ' + error.message);
+    }
+};
+
 const followUser = async (req, res) => {
     try {
         const { id } = req.params; // id of the destUser
@@ -373,4 +407,5 @@ export {
     forgotPassword,
     verifyResetPasswordToken,
     resetPassword,
+    changePassword,
 };

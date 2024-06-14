@@ -2,7 +2,7 @@ import { Avatar } from '@chakra-ui/avatar';
 import { Box, Flex, Link, Text, VStack } from '@chakra-ui/layout';
 import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu';
 import { Portal } from '@chakra-ui/portal';
-import { Button, useToast, useColorMode } from '@chakra-ui/react';
+import { Button, useToast, useColorMode, useColorModeValue } from '@chakra-ui/react';
 import { BsInstagram } from 'react-icons/bs';
 import { CgMoreO } from 'react-icons/cg';
 import { useRecoilValue } from 'recoil';
@@ -38,10 +38,19 @@ const UserHeader = ({ user }) => {
                     </Text>
                     <Flex gap={2} alignItems={'center'}>
                         <Text fontSize={'sm'}>{user.username}</Text>
-                        <Text fontSize={'xs'} bg={'gray.dark'} color={'gray.light'} p={1} borderRadius={'full'}>
-                            threads.net
+                        <Text
+                            fontSize={'xs'}
+                            bg={useColorModeValue('gray.300', 'gray.700')}
+                            color={useColorModeValue('gray.800', 'white')}
+                            p={1}
+                            borderRadius={'full'}
+                        >
+                            social.net
                         </Text>
                     </Flex>
+                    <Text fontSize={'md'} fontStyle={'italic'} mt={2}>
+                        {user.bio}
+                    </Text>
                 </Box>
                 <Box>
                     {user.avatar && (
@@ -67,11 +76,11 @@ const UserHeader = ({ user }) => {
                 </Box>
             </Flex>
 
-            <Text>{user.bio}</Text>
-
             {currentUser?._id === user._id && (
                 <Link as={RouterLink} to="/update">
-                    <Button size={'sm'}>Update Profile</Button>
+                    <Button size={'sm'} colorScheme="green">
+                        Update Profile
+                    </Button>
                 </Link>
             )}
             {currentUser?._id !== user._id && (
@@ -82,21 +91,25 @@ const UserHeader = ({ user }) => {
             <Flex w={'full'} justifyContent={'space-between'}>
                 <Flex gap={2} alignItems={'center'}>
                     <Text color={'gray.light'}>{user.followers.length} followers</Text>
-                    <Box w="1" h="1" bg={'gray.light'} borderRadius={'full'}></Box>
-                    <Link color={'gray.light'}>instagram.com</Link>
                 </Flex>
                 <Flex>
-                    <Box className="icon-container">
+                    <Box
+                        className="icon-container"
+                        _hover={{ backgroundColor: useColorModeValue('gray.200', 'gray.700') }}
+                    >
                         <BsInstagram size={24} cursor={'pointer'} />
                     </Box>
-                    <Box className="icon-container">
+                    <Box
+                        className="icon-container"
+                        _hover={{ backgroundColor: useColorModeValue('gray.200', 'gray.700') }}
+                    >
                         <Menu>
                             <MenuButton>
                                 <CgMoreO size={24} cursor={'pointer'} />
                             </MenuButton>
                             <Portal>
-                                <MenuList bg={'gray.dark'}>
-                                    <MenuItem bg={'gray.dark'} onClick={copyURL}>
+                                <MenuList bg={useColorModeValue('gray.200', 'gray.900')}>
+                                    <MenuItem bg={useColorModeValue('gray.200', 'gray.900')} onClick={copyURL}>
                                         Copy link
                                     </MenuItem>
                                 </MenuList>

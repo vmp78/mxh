@@ -59,46 +59,50 @@ export default function SignupCard() {
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Box rounded={'lg'} bg={'gray.900'} boxShadow={'lg'} p={8}>
                     <Stack spacing={4}>
-                        <Heading fontSize={'4xl'} textAlign={'center'} pb="15px">
+                        <Heading fontSize={'4xl'} textAlign={'center'} pb="15px" color={'whitesmoke'}>
                             Sign up
                         </Heading>
                         <HStack>
                             <Box>
                                 <FormControl isRequired>
-                                    <FormLabel>Full name</FormLabel>
+                                    <FormLabel color={'whitesmoke'}>Full name</FormLabel>
                                     <Input
                                         type="text"
                                         onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
                                         value={inputs.name}
+                                        color={'whitesmoke'}
                                     />
                                 </FormControl>
                             </Box>
                             <Box>
                                 <FormControl isRequired>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel color={'whitesmoke'}>Username</FormLabel>
                                     <Input
                                         type="text"
                                         onChange={(e) => setInputs({ ...inputs, username: e.target.value })}
                                         value={inputs.username}
+                                        color={'whitesmoke'}
                                     />
                                 </FormControl>
                             </Box>
                         </HStack>
                         <FormControl isRequired>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel color={'whitesmoke'}>Email</FormLabel>
                             <Input
                                 type="email"
                                 onChange={(e) => setInputs({ ...inputs, email: e.target.value })}
                                 value={inputs.email}
+                                color={'whitesmoke'}
                             />
                         </FormControl>
                         <FormControl isRequired>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel color={'whitesmoke'}>Password</FormLabel>
                             <InputGroup>
                                 <Input
                                     type={showPassword ? 'text' : 'password'}
                                     onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
                                     value={inputs.password}
+                                    color={'whitesmoke'}
                                 />
                                 <InputRightElement h={'full'}>
                                     <Button
@@ -125,7 +129,7 @@ export default function SignupCard() {
                             </Button>
                         </Stack>
                         <Stack pt={6}>
-                            <Text align={'center'}>
+                            <Text align={'center'} color={'gray.500'}>
                                 Already a user?{' '}
                                 <Text
                                     display={'inline'}

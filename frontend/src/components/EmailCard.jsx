@@ -38,11 +38,11 @@ export default function EmailCard() {
             <Stack spacing={8} mx={'auto'} maxW={'lg'} py={12} px={6}>
                 <Box rounded={'lg'} boxShadow={'lg'} p={8} w={{ base: 'full', sm: '400px' }} bgColor={'gray.900'}>
                     <Stack spacing={4}>
-                        <Heading fontSize={'2xl'} textAlign={'center'}>
+                        <Heading fontSize={'2xl'} textAlign={'center'} color={'whitesmoke'}>
                             Reset Password
                         </Heading>
                         <FormControl isRequired>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel color={'whitesmoke'}>Email</FormLabel>
                             <Input
                                 type="text"
                                 onChange={(e) => setInputs({ ...inputs, email: e.target.value })}

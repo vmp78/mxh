@@ -61,7 +61,6 @@ const CreatePost = () => {
                 body: JSON.stringify({ postedBy: user._id, text: postText, img: imgUrl }),
             });
             const data = await res.json();
-            console.log(data);
             if (data.error) {
                 showToast('Error', data.error, 'error');
                 return;
@@ -71,6 +70,7 @@ const CreatePost = () => {
             onClose();
             setPostText('');
             setImgUrl('');
+            setRemainingChar(MAX_CHAR);
         } catch (error) {
             showToast('Error', error, 'error');
         } finally {
@@ -90,7 +90,7 @@ const CreatePost = () => {
 
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
-                <ModalContent bgColor={'gray.dark'}>
+                <ModalContent bgColor={useColorModeValue('gray.300', 'gray.dark')}>
                     <ModalHeader>Create Post</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody pb={6}>
@@ -119,7 +119,9 @@ const CreatePost = () => {
                                     onClick={() => {
                                         setImgUrl('');
                                     }}
-                                    bg={'gray.800'}
+                                    bg={useColorModeValue('gray.300', 'gray.900')}
+                                    color={useColorModeValue('white.200', 'white.900')}
+                                    _hover={{ backgroundColor: useColorModeValue('gray.100', 'gray.700') }}
                                     position={'absolute'}
                                     top={2}
                                     right={2}

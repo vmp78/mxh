@@ -1,21 +1,9 @@
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    FormLabel,
-    Heading,
-    Input,
-    InputGroup,
-    InputRightElement,
-    Stack,
-} from '@chakra-ui/react';
+import { Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import userAtom from '../atoms/userAtom';
 import useShowToast from '../hooks/useShowToast';
-import { redirect, useNavigate, useParams } from 'react-router-dom';
 
 export default function ResetPasswordCard() {
     const { userid, token } = useParams();
@@ -68,45 +56,23 @@ export default function ResetPasswordCard() {
                         </Heading>
                         <FormControl isRequired>
                             <FormLabel>New Password</FormLabel>
-                            <InputGroup>
-                                <Input
-                                    type={showPassword ? 'text' : 'password'}
-                                    onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
-                                    value={inputs.password}
-                                />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() => setShowPassword((showPassword) => !showPassword)}
-                                    >
-                                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
+                            <Input
+                                type={showPassword ? 'text' : 'password'}
+                                onChange={(e) => setInputs({ ...inputs, password: e.target.value })}
+                                value={inputs.password}
+                            />
                         </FormControl>
                         <FormControl isRequired>
                             <FormLabel>Confirm Password</FormLabel>
-                            <InputGroup>
-                                <Input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })}
-                                    value={inputs.confirmPassword}
-                                />
-                                <InputRightElement h={'full'}>
-                                    <Button
-                                        variant={'ghost'}
-                                        onClick={() =>
-                                            setShowConfirmPassword((showConfirmPassword) => !showConfirmPassword)
-                                        }
-                                    >
-                                        {showConfirmPassword ? <ViewIcon /> : <ViewOffIcon />}
-                                    </Button>
-                                </InputRightElement>
-                            </InputGroup>
+                            <Input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                onChange={(e) => setInputs({ ...inputs, confirmPassword: e.target.value })}
+                                value={inputs.confirmPassword}
+                            />
                         </FormControl>
                         <Stack spacing={10} pt={2}>
                             <Button
-                                loadingText="Logging in..."
+                                loadingText="Changing..."
                                 size="lg"
                                 color={'black'}
                                 bg={'gray.300'}

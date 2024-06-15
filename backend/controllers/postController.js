@@ -78,6 +78,33 @@ const deletePost = async (req, res) => {
     }
 };
 
+const rePost = async(req, res) => {
+        const { postId, userId } = req.body;
+      
+        try {
+          const originalPost = await Post.findById(postId);
+      
+          if (!originalPost) {
+            return res.status(404).json({ error: 'Post not found' });
+          }
+      
+          const repost = await Post.create({
+            content: originalPost.content,
+            userId: originalPost.userId,
+            reposted_by: userId,
+          });
+      
+          originalPost.replies.includes(userId);
+          await originalPost.save();
+      
+          res.status(200).json(repost);
+        } catch (error) {
+          res.status(500).json({ error: err.message });
+        }
+      };    
+
+
+
 const likePost = async (req, res) => {
     try {
         const { id: postId } = req.params;
@@ -174,4 +201,4 @@ const getUserPosts = async (req, res) => {
     }
 };
 
-export { createPost, getPost, deletePost, likePost, replyPost, getFeed, getUserPosts };
+export { createPost, getPost, deletePost, likePost, rePost, replyPost, getFeed, getUserPosts };

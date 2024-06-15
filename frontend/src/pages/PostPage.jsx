@@ -57,6 +57,8 @@ const PostPage = () => {
 		}
 	};
 
+	
+
 	if (!user && loading) {
 		return (
 			<Flex justifyContent={"center"}>

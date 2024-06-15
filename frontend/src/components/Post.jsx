@@ -57,6 +57,9 @@ const Post = ({ post, postedBy }) => {
         }
     };
 
+    
+    
+
     if (!user) return null;
     return (
         <Link to={`/${user.username}/post/${post._id}`}>
@@ -122,7 +125,7 @@ const Post = ({ post, postedBy }) => {
                                     navigate(`/${user.username}`);
                                 }}
                             >
-                                {user?.username}
+                                {user?.username} 
                             </Text>
                             <Image src="/verified.png" w={4} h={4} ml={1} />
                         </Flex>

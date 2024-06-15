@@ -1,23 +1,6 @@
 import { AddIcon } from '@chakra-ui/icons';
-import {
-    Button,
-    useColorModeValue,
-    useDisclosure,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    FormControl,
-    Textarea,
-    Text,
-    Input,
-    Image,
-    Flex,
-    CloseButton,
-} from '@chakra-ui/react';
+import {Button, useColorModeValue, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody,
+        ModalFooter, FormControl, Textarea, Text, Input, Image, Flex, CloseButton,} from '@chakra-ui/react';
 import { useRef, useState } from 'react';
 import usePreviewImg from '../hooks/usePreviewImg';
 import { BsFillImageFill } from 'react-icons/bs';
@@ -26,6 +9,7 @@ import userAtom from '../atoms/userAtom';
 import useShowToast from '../hooks/useShowToast';
 import postsAtom from '../atoms/postsAtom';
 const MAX_CHAR = 500;
+    
 
 const CreatePost = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,6 +34,7 @@ const CreatePost = () => {
             setRemainingChar(MAX_CHAR - inputText.length);
         }
     };
+
     const handleCreatePost = async () => {
         setLoading(true);
         try {
@@ -77,6 +62,7 @@ const CreatePost = () => {
             setLoading(false);
         }
     };
+    
     return (
         <>
             <Button

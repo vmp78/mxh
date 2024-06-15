@@ -23,9 +23,11 @@ import postsAtom from "../atoms/postsAtom";
 const Actions = ({ post }) => {
 	const user = useRecoilValue(userAtom);
 	const [liked, setLiked] = useState(post.likes.includes(user?._id));
+	const [reposted, setReposted] = useState(post.reposts.includes(user?._id));
 	const [posts, setPosts] = useRecoilState(postsAtom);
 	const [isLiking, setIsLiking] = useState(false);
 	const [isReplying, setIsReplying] = useState(false);
+	const [isReposting, setIsReposting] = useState(false);
 	const [reply, setReply] = useState("");
 
 	const showToast = useShowToast();
@@ -73,6 +75,8 @@ const Actions = ({ post }) => {
 		}
 	};
 
+
+
 	const handleReply = async () => {
 		if (!user) return showToast("Error", "You must be logged in to reply to a post", "error");
 		if (isReplying) return;
@@ -105,6 +109,41 @@ const Actions = ({ post }) => {
 		}
 	};
 
+	const handleRepost = async () => {
+		if (!user) return showToast('Error', 'You must be logged in to repost', 'error');
+		if (isReposting) return;
+		setIsReposting(true);
+	
+		try {
+		  const response = await fetch('/api/posts/repost', {
+			method: 'POST',
+			headers: {
+			  'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ postId, userId: user._id }),
+		  });
+	
+		  const data = await response.json();
+		  if (data.error) return showToast('Error', data.error, 'error');
+		  
+		  const posts = posts.map((p) => {
+			if (p._id === post._id) {
+				return { ...p, reposts: [...p.reposts, user._id] };
+			}
+			return p;
+		});
+		  setPosts([data, ...posts]);
+
+		} catch (error) {
+		  showToast('Error', error.message, 'error');
+		} finally {
+		  setIsReposting(false);
+		}
+	  };
+	
+
+	
+	
 	return (
 		<Flex flexDirection='column'>
 			<Flex gap={3} my={2} onClick={(e) => e.preventDefault()}>
@@ -146,6 +185,25 @@ const Actions = ({ post }) => {
 				</svg>
 
 				<RepostSVG />
+				<svg
+					aria-label='Repost'
+					color='currentColor'
+					fill='currentColor'
+					height='20'
+					role='img'
+					viewBox='0 0 24 24'
+					width='20'
+					onClick={handleRepost}
+				>
+				<title>Repost</title>
+				<path
+				fill=''
+				d='M19.998 9.497a1 1 0 0 0-1 1v4.228a3.274 3.274 0 0 1-3.27 3.27h-5.313l1.791-1.787a1 1 0 0 0-1.412-1.416L7.29 18.287a1.004 1.004 0 0 0-.294.707v.001c0 .023.012.042.013.065a.923.923 0 0 0 .281.643l3.502 3.504a1 1 0 0 0 1.414-1.414l-1.797-1.798h5.318a5.276 5.276 0 0 0 5.27-5.27v-4.228a1 1 0 0 0-1-1Zm-6.41-3.496-1.795 1.795a1 1 0 1 0 1.414 1.414l3.5-3.5a1.003 1.003 0 0 0 0-1.417l-3.5-3.5a1 1 0 0 0-1.414 1.414l1.794 1.794H8.27A5.277 5.277 0 0 0 3 9.271V13.5a1 1 0 0 0 2 0V9.271a3.275 3.275 0 0 1 3.271-3.27Z'
+				></path>
+			</svg>
+
+
+				
 				<ShareSVG />
 			</Flex>
 
@@ -187,25 +245,7 @@ const Actions = ({ post }) => {
 
 export default Actions;
 
-const RepostSVG = () => {
-	return (
-		<svg
-			aria-label='Repost'
-			color='currentColor'
-			fill='currentColor'
-			height='20'
-			role='img'
-			viewBox='0 0 24 24'
-			width='20'
-		>
-			<title>Repost</title>
-			<path
-				fill=''
-				d='M19.998 9.497a1 1 0 0 0-1 1v4.228a3.274 3.274 0 0 1-3.27 3.27h-5.313l1.791-1.787a1 1 0 0 0-1.412-1.416L7.29 18.287a1.004 1.004 0 0 0-.294.707v.001c0 .023.012.042.013.065a.923.923 0 0 0 .281.643l3.502 3.504a1 1 0 0 0 1.414-1.414l-1.797-1.798h5.318a5.276 5.276 0 0 0 5.27-5.27v-4.228a1 1 0 0 0-1-1Zm-6.41-3.496-1.795 1.795a1 1 0 1 0 1.414 1.414l3.5-3.5a1.003 1.003 0 0 0 0-1.417l-3.5-3.5a1 1 0 0 0-1.414 1.414l1.794 1.794H8.27A5.277 5.277 0 0 0 3 9.271V13.5a1 1 0 0 0 2 0V9.271a3.275 3.275 0 0 1 3.271-3.27Z'
-			></path>
-		</svg>
-	);
-};
+
 
 const ShareSVG = () => {
 	return (

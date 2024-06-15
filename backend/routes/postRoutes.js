@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, getPost, deletePost, likePost, replyPost, getFeed, getUserPosts } from '../controllers/postController.js';
+import { createPost, getPost, deletePost, likePost, replyPost, rePost, getFeed, getUserPosts } from '../controllers/postController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
 const router = express.Router();
@@ -22,5 +22,7 @@ router.put('/like/:id', protectRoute, likePost);
 
 // Reply post
 router.put('/reply/:id', protectRoute, replyPost);
+
+router.post('/repost/:id', protectRoute, rePost);
 
 export default router;

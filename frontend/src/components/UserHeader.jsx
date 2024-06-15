@@ -1,21 +1,32 @@
-import { Avatar } from '@chakra-ui/avatar';
-import { Box, Flex, Link, Text, VStack } from '@chakra-ui/layout';
-import { Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/menu';
-import { Portal } from '@chakra-ui/portal';
-import { Button, useToast, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import {
+    Box,
+    Flex,
+    Link,
+    Text,
+    VStack,
+    Avatar,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
+    Portal,
+    Button,
+    useColorMode,
+    useColorModeValue,
+    useToast,
+} from '@chakra-ui/react';
 import { BsInstagram } from 'react-icons/bs';
 import { CgMoreO } from 'react-icons/cg';
+import { Link as RouterLink } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import userAtom from '../atoms/userAtom';
-import { Link as RouterLink } from 'react-router-dom';
 import useFollowUnfollow from '../hooks/useFollowUnfollow';
-
+ 
 const UserHeader = ({ user }) => {
-    const { colorMode, toggleColorMode } = useColorMode();
     const toast = useToast();
     const currentUser = useRecoilValue(userAtom); // logged in user
     const { handleFollowUnfollow, following, updating } = useFollowUnfollow(user);
-
+ 
     const copyURL = () => {
         const currentURL = window.location.href;
         navigator.clipboard.writeText(currentURL).then(() => {
@@ -28,7 +39,7 @@ const UserHeader = ({ user }) => {
             });
         });
     };
-
+ 
     return (
         <VStack gap={4} alignItems={'start'}>
             <Flex justifyContent={'space-between'} w={'full'}>
@@ -75,14 +86,7 @@ const UserHeader = ({ user }) => {
                     )}
                 </Box>
             </Flex>
-
-            {currentUser?._id === user._id && (
-                <Link as={RouterLink} to="/update">
-                    <Button size={'sm'} colorScheme="green">
-                        Update Profile
-                    </Button>
-                </Link>
-            )}
+ 
             {currentUser?._id !== user._id && (
                 <Button size={'sm'} onClick={handleFollowUnfollow} isLoading={updating}>
                     {following ? 'Unfollow' : 'Follow'}
@@ -118,30 +122,16 @@ const UserHeader = ({ user }) => {
                     </Box>
                 </Flex>
             </Flex>
-
-            <Flex w={'full'}>
-                <Flex
-                    flex={1}
-                    borderBottom={colorMode === 'dark' ? '1.5px solid white' : '1.5px solid gray'}
-                    justifyContent={'center'}
-                    pb="3"
-                    cursor={'pointer'}
-                >
-                    <Text fontWeight={'bold'}> Threads</Text>
-                </Flex>
-                <Flex
-                    flex={1}
-                    borderBottom={colorMode === 'dark' ? '1.5px solid black' : '1.5px solid white'}
-                    justifyContent={'center'}
-                    color={'gray.light'}
-                    pb="3"
-                    cursor={'pointer'}
-                >
-                    <Text fontWeight={'bold'}> Replies</Text>
-                </Flex>
-            </Flex>
+ 
+            {currentUser?._id === user._id && (
+                <Link as={RouterLink} to="/update" w={'full'}>
+                    <Button size={'sm'} colorScheme="gray" borderWidth={2} width={'100%'}>
+                        Edit Profile
+                    </Button>
+                </Link>
+            )}
         </VStack>
     );
 };
-
+ 
 export default UserHeader;

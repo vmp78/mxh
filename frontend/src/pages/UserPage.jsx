@@ -1,39 +1,56 @@
+import { Flex, Heading, Image, Spinner, Stack, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import UserHeader from '../components/UserHeader';
 import { useParams } from 'react-router-dom';
-import useShowToast from '../hooks/useShowToast';
-import { Flex, Spinner, Image, Stack, Heading } from '@chakra-ui/react';
 import Post from '../components/Post';
+import Repost from '../components/Repost';
+import UserHeader from '../components/UserHeader';
 import useGetUserProfile from '../hooks/useGetUserProfile';
+import useShowToast from '../hooks/useShowToast';
 import { useRecoilState } from 'recoil';
-import postsAtom from '../atoms/postsAtom';
-
+import { postsAtom, repostsAtom } from '../atoms/postsAtom';
+ 
 const UserPage = () => {
     const { user, loading } = useGetUserProfile();
     const { username } = useParams();
     const showToast = useShowToast();
     const [posts, setPosts] = useRecoilState(postsAtom);
+    const [reposts, setReposts] = useRecoilState(repostsAtom);
     const [fetchingPosts, setFetchingPosts] = useState(true);
-
+ 
+    //eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        const getPosts = async () => {
-            if (!user) return;
+        if (!user) return;
+        const getPostsAndReposts = async () => {
             setFetchingPosts(true);
             try {
-                const res = await fetch(`/api/posts/user/${username}`);
-                const data = await res.json();
-                setPosts(data);
+                const [postsResponse, repostsResponse] = await Promise.all([
+                    fetch(`/api/posts/user/${username}`),
+                    fetch(`/api/posts/user/repost/${username}`),
+                ]);
+ 
+                if (!postsResponse.ok || !repostsResponse.ok) {
+                    throw new Error('Failed to fetch posts and reposts');
+                }
+ 
+                const postData = await postsResponse.json();
+                const repostData = await repostsResponse.json();
+ 
+                setPosts(postData);
+                setReposts(repostData);
             } catch (error) {
                 showToast('Error', error.message, 'error');
                 setPosts([]);
+                setReposts([]);
             } finally {
                 setFetchingPosts(false);
             }
         };
-
-        getPosts();
-    }, [username, showToast, setPosts, user]);
-
+ 
+        if (user) {
+            getPostsAndReposts();
+        }
+    }, [username, user]);
+ 
     if (!user && loading) {
         return (
             <Flex justifyContent={'center'}>
@@ -41,7 +58,7 @@ const UserPage = () => {
             </Flex>
         );
     }
-
+ 
     if (!user && !loading)
         return (
             <Flex maxW={'xs'} direction={'column'} justify={'center'} alignItems={'center'} mx={'auto'}>
@@ -57,23 +74,40 @@ const UserPage = () => {
                 </Stack>
             </Flex>
         );
-
+ 
+    if (!posts || !reposts) return null;
     return (
         <>
             <UserHeader user={user} />
-
-            {!fetchingPosts && posts.length === 0 && <h1>User has not posts.</h1>}
+ 
+            {!fetchingPosts && posts === null && <h1>User has not posts.</h1>}
             {fetchingPosts && (
                 <Flex justifyContent={'center'} my={12}>
                     <Spinner size={'xl'} />
                 </Flex>
             )}
-
-            {posts.map((post) => (
-                <Post key={post._id} post={post} postedBy={post.postedBy} />
-            ))}
+            <Tabs isFitted variant="enclosed">
+                <TabList mb="1em">
+                    <Tab>Threads</Tab>
+                    <Tab>Reposts</Tab>
+                </TabList>
+                <TabPanels>
+                    <TabPanel>
+                        {!fetchingPosts &&
+                            posts.length > 0 &&
+                            posts.map((post) => <Post key={post._id} post={post} postedBy={post.postedBy} />)}
+                    </TabPanel>
+                    <TabPanel>
+                        {!fetchingPosts &&
+                            reposts.length > 0 &&
+                            reposts.map((repost) => (
+                                <Repost key={repost._id} post={repost.post} postedBy={repost.postedBy} />
+                            ))}
+                    </TabPanel>
+                </TabPanels>
+            </Tabs>
         </>
     );
 };
-
+ 
 export default UserPage;

@@ -1,8 +1,11 @@
-import { atom } from "recoil";
-
-const postsAtom = atom({
-	key: "postsAtom",
-	default: [],
+import { atom } from 'recoil';
+ 
+export const postsAtom = atom({
+    key: 'postsAtom',
+    default: [],
 });
-
-export default postsAtom;
+ 
+export const repostsAtom = atom({
+    key: 'repostsAtom',
+    default: [],
+});

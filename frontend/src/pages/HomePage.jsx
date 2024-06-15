@@ -1,15 +1,18 @@
 import { Box, Flex, Heading, Image, Spinner, Stack, Text, useColorModeValue } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import postsAtom from '../atoms/postsAtom';
+import { postsAtom, repostsAtom } from '../atoms/postsAtom';
 import Post from '../components/Post';
 import SuggestedUsers from '../components/SuggestedUsers';
 import useShowToast from '../hooks/useShowToast';
-
+import Repost from '../components/Repost';
+ 
 const HomePage = () => {
     const [posts, setPosts] = useRecoilState(postsAtom);
+    const [reposts, setReposts] = useRecoilState(repostsAtom);
     const [loading, setLoading] = useState(true);
     const showToast = useShowToast();
+ 
     useEffect(() => {
         const getFeedPosts = async () => {
             setLoading(true);
@@ -21,8 +24,8 @@ const HomePage = () => {
                     showToast('Error', data.error, 'error');
                     return;
                 }
-                console.log(data);
-                setPosts(data);
+                setPosts(data.feedPosts);
+                setReposts(data.feedReposts);
             } catch (error) {
                 showToast('Error', error.message, 'error');
             } finally {
@@ -31,7 +34,7 @@ const HomePage = () => {
         };
         getFeedPosts();
     }, [showToast, setPosts]);
-
+ 
     return (
         <Flex gap="10" alignItems={'flex-start'}>
             <Box flex={70}>
@@ -50,17 +53,18 @@ const HomePage = () => {
                         </Stack>
                     </Flex>
                 )}
-
+ 
                 {loading && (
                     <Flex justify="center">
                         <Spinner size="xl" />
                     </Flex>
                 )}
-
-                {posts.map((post) => (
-                    <Post key={post._id} post={post} postedBy={post.postedBy} />
-                ))}
+ 
+                {reposts.length > 0 &&
+                    reposts.map((repost) => <Repost key={repost._id} post={repost.post} postedBy={repost.postedBy} />)}
+                {posts.length > 0 && posts.map((post) => <Post key={post._id} post={post} postedBy={post.postedBy} />)}
             </Box>
+ 
             <Box
                 flex={30}
                 display={{
@@ -76,5 +80,5 @@ const HomePage = () => {
         </Flex>
     );
 };
-
+ 
 export default HomePage;

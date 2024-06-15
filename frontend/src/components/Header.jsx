@@ -28,7 +28,7 @@ import useLogout from '../hooks/useLogout';
 import SearchBar from './SearchBar';
 import SearchResultList from './SearchResultList';
 import Settings from './Settings';
-
+ 
 const Header = () => {
     const { colorMode } = useColorMode();
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -39,17 +39,17 @@ const Header = () => {
     const user = useRecoilValue(userAtom);
     const logout = useLogout();
     const location = useLocation();
-
+ 
     const MenuItemHoverStyles = {
         _hover: {
             backgroundColor: colorMode === 'dark' ? 'gray.900' : 'gray.100',
         },
     };
-
+ 
     useLayoutEffect(() => {
         if (!reset) setReset(!reset);
     }, [location]);
-
+ 
     return (
         <Box
             position={'sticky'}
@@ -73,7 +73,7 @@ const Header = () => {
                         <AiFillHome size={26} />
                     </Link>
                 )}
-
+ 
                 {user && (
                     <Flex position="relative">
                         <SearchBar
@@ -89,7 +89,7 @@ const Header = () => {
                         )}
                     </Flex>
                 )}
-
+ 
                 {user && (
                     <Menu>
                         <MenuButton as={IconButton} aria-label="Options" icon={<HamburgerIcon />} variant="outline" />
@@ -131,11 +131,16 @@ const Header = () => {
                         </MenuList>
                     </Menu>
                 )}
-
+ 
                 <Drawer placement={'left'} size={'xs'} onClose={onClose} isOpen={isOpen}>
                     <DrawerOverlay />
                     <DrawerContent bgColor={colorMode === 'dark' ? 'gray.dark' : 'gray.200'}>
-                        <DrawerHeader borderBottomWidth="1px">Settings</DrawerHeader>
+                        <DrawerHeader borderBottomWidth="1px" alignItems="center">
+                            <Text display="flex" alignItems="center">
+                                <LuSettings display={'inline-block'} size={26} />
+                                <Text ml={2}>Settings</Text>
+                            </Text>
+                        </DrawerHeader>
                         <DrawerBody>
                             <Settings />
                         </DrawerBody>
@@ -145,5 +150,5 @@ const Header = () => {
         </Box>
     );
 };
-
+ 
 export default Header;

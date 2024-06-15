@@ -1,6 +1,6 @@
 import { Avatar, Box, Card, Flex, Spinner, Stack, StackDivider, Text, useColorMode } from '@chakra-ui/react';
 import { Link } from 'react-router-dom';
-
+ 
 const SearchResultList = ({ users, w, loading }) => {
     const { colorMode } = useColorMode();
     return (
@@ -58,7 +58,7 @@ const SearchResultList = ({ users, w, loading }) => {
                         </Card>
                     )
                 ) : (
-                    <Card bgColor={'gray.dark'} p={2}>
+                    <Card bgColor={colorMode === 'dark' ? 'black' : 'white'} p={2}>
                         <Flex align="center">
                             <Spinner size={'md'} />
                         </Flex>
@@ -68,5 +68,5 @@ const SearchResultList = ({ users, w, loading }) => {
         </Card>
     );
 };
-
+ 
 export default SearchResultList;

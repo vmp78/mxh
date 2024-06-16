@@ -238,11 +238,6 @@ const changePassword = async (req, res) => {
 
     const user = await User.findById(decoded.userId); // select anything but the password
 
-    // const oldUser = await User.findOne({ _id: userid });
-    // if (!oldUser) {
-    //     return res.status(404).json({ error: `User ${userid} not found!` });
-    // }
-
     try {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);

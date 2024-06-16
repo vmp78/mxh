@@ -9,43 +9,42 @@ import Actions from './Actions';
 import { Link } from 'react-router-dom';
 import userAtom from '../atoms/userAtom';
 import { RepeatIcon } from '@chakra-ui/icons';
- 
+
 const Repost = ({ post, postedBy }) => {
     const [postUser, setPostUser] = useState(null);
     const [repostUser, setRepostUser] = useState(null);
     const navigate = useNavigate();
     const showToast = useShowToast();
- 
-    // console.log('This is the post that is reposted ', post);
+
     // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
-        if (postUser) return;
+        if (!postedBy || !post) return;
         const getUser = async () => {
             try {
                 const [postUserResponse, repostUseresponse] = await Promise.all([
                     fetch(`api/users/profile/${post.postedBy}`),
                     fetch(`api/users/profile/${postedBy}`),
                 ]);
- 
+
                 if (!postUserResponse.ok || !repostUseresponse.ok) {
                     throw new Error('Failed to fetch posts and reposts');
                 }
- 
+
                 const postUserData = await postUserResponse.json();
                 const repostUserData = await repostUseresponse.json();
- 
+
                 setPostUser(postUserData);
                 setRepostUser(repostUserData);
             } catch (error) {
-                showToast('Error', error.message, 'error');
+                showToast('Error at Repost', error.message, 'error');
                 setPostUser(null);
                 setRepostUser(null);
             }
         };
- 
+
         getUser();
-    }, [showToast, setPostUser, setRepostUser]);
- 
+    }, [showToast, postedBy]);
+
     if (!postUser || !repostUser) return null;
     return (
         <Flex gap={3} mb={4}>
@@ -62,15 +61,22 @@ const Repost = ({ post, postedBy }) => {
                 />
             </Flex>
             <Flex flex={1} flexDirection={'column'} gap={2}>
-                <Box color="gray.400" cursor={'pointer'}>
+                <Box
+                    color="gray.400"
+                    cursor={'pointer'}
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate(`/${repostUser.username}`);
+                    }}
+                >
                     <RepeatIcon />
-                    <Text fontSize="small" fontWeight="bold" alignSelf="start" display="inline-block" ml={1}>
+                    <Box fontSize="small" fontWeight="bold" alignSelf="start" display="inline-block" ml={1}>
                         {repostUser.username}
                         <Text display="inline-block" ml={1} fontWeight="normal">
                             {' '}
                             reposted
                         </Text>
-                    </Text>
+                    </Box>
                 </Box>
                 <Flex justifyContent={'space-between'} w={'full'}>
                     <Flex w={'full'} alignItems={'center'}>
@@ -107,5 +113,5 @@ const Repost = ({ post, postedBy }) => {
         </Flex>
     );
 };
- 
+
 export default Repost;

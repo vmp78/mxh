@@ -26,21 +26,21 @@ import userAtom from '../atoms/userAtom';
 import useShowToast from '../hooks/useShowToast';
 import { postsAtom } from '../atoms/postsAtom';
 const MAX_CHAR = 500;
- 
+
 const CreatePost = () => {
+    const user = useRecoilValue(userAtom);
+    const imageRef = useRef(null);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const [postText, setPostText] = useState('');
-    const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
-    const imageRef = useRef(null);
-    const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
-    const user = useRecoilValue(userAtom);
-    const showToast = useShowToast();
-    const [loading, setLoading] = useState(false);
     const [posts, setPosts] = useRecoilState(postsAtom);
- 
+    const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg({ url: null });
+    const [remainingChar, setRemainingChar] = useState(MAX_CHAR);
+    const [loading, setLoading] = useState(false);
+    const showToast = useShowToast();
+
     const handleTextChange = (e) => {
         const inputText = e.target.value;
- 
+
         if (inputText.length > MAX_CHAR) {
             const truncatedText = inputText.slice(0, MAX_CHAR);
             setPostText(truncatedText);
@@ -87,7 +87,7 @@ const CreatePost = () => {
                 bg={useColorModeValue('gray.300', 'gray.dark')}
                 onClick={onOpen}
             ></Button>
- 
+
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent bgColor={useColorModeValue('gray.300', 'gray.dark')}>
@@ -104,14 +104,14 @@ const CreatePost = () => {
                                 {remainingChar}/{MAX_CHAR}
                             </Text>
                             <Input type="file" hidden ref={imageRef} onChange={handleImageChange} />
- 
+
                             <BsFillImageFill
                                 style={{ marginLeft: '5px', cursor: 'pointer' }}
                                 size={16}
                                 onClick={() => imageRef.current.click()}
                             />
                         </FormControl>
- 
+
                         {imgUrl && (
                             <Flex mt={5} w={'full'} position={'relative'}>
                                 <Image src={imgUrl} alt="Selected img" />
@@ -129,7 +129,7 @@ const CreatePost = () => {
                             </Flex>
                         )}
                     </ModalBody>
- 
+
                     <ModalFooter>
                         <Button colorScheme="blue" onClick={handleCreatePost} isLoading={loading}>
                             Post
@@ -141,4 +141,3 @@ const CreatePost = () => {
     );
 };
 export default CreatePost;
- 

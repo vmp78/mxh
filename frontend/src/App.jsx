@@ -11,7 +11,6 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import HomePage from './pages/HomePage';
 import PostPage from './pages/PostPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import { SettingsPage } from './pages/SettingsPage';
 import UserPage from './pages/UserPage';
 function App() {
     const user = useRecoilValue(userAtom);
@@ -21,7 +20,19 @@ function App() {
             {pathname !== '/auth' && pathname !== '/auth/forgot-password' && <Header />}
             <Container maxW={pathname === '/' || pathname === '/auth' ? { base: '620px', md: '900px' } : '620px'}>
                 <Routes>
-                    <Route path="/" element={user ? <HomePage /> : <Navigate to="/auth" />} />
+                    <Route
+                        path="/"
+                        element={
+                            user ? (
+                                <>
+                                    <HomePage />
+                                    <CreatePost />
+                                </>
+                            ) : (
+                                <Navigate to="/auth" />
+                            )
+                        }
+                    />
                     <Route path="/auth" element={!user ? <AuthPage /> : <Navigate to="/" />} />
                     <Route
                         path="/auth/forgot-password"
@@ -36,7 +47,7 @@ function App() {
                     <Route
                         path="/:username"
                         element={
-                            user ? (
+                            user.username === pathname.slice(1) ? (
                                 <>
                                     <UserPage />
                                     <CreatePost />
@@ -48,7 +59,6 @@ function App() {
                     />
                     <Route path="/:username/post/:pid" element={<PostPage />} />
                     <Route path="/chat" element={user ? <ChatPage /> : <Navigate to={'/auth'} />} />
-                    <Route path="/settings" element={user ? <SettingsPage /> : <Navigate to={'/auth'} />} />
                 </Routes>
             </Container>
         </Box>

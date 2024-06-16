@@ -38,7 +38,6 @@ const Settings = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
 
     const [inputs, setInputs] = useState({
         password: '',

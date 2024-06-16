@@ -30,7 +30,7 @@ export default function EditProfilePage() {
     const showToast = useShowToast();
     const navigate = useNavigate();
 
-    const { handleImageChange, imgUrl } = usePreviewImg();
+    const { handleImageChange, imgUrl } = usePreviewImg({ url: null });
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -8,15 +8,15 @@ import useGetUserProfile from '../hooks/useGetUserProfile';
 import useShowToast from '../hooks/useShowToast';
 import { useRecoilState } from 'recoil';
 import { postsAtom, repostsAtom } from '../atoms/postsAtom';
- 
+
 const UserPage = () => {
     const { user, loading } = useGetUserProfile();
     const { username } = useParams();
-    const showToast = useShowToast();
     const [posts, setPosts] = useRecoilState(postsAtom);
     const [reposts, setReposts] = useRecoilState(repostsAtom);
     const [fetchingPosts, setFetchingPosts] = useState(true);
- 
+    const showToast = useShowToast();
+
     //eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
         if (!user) return;
@@ -27,14 +27,14 @@ const UserPage = () => {
                     fetch(`/api/posts/user/${username}`),
                     fetch(`/api/posts/user/repost/${username}`),
                 ]);
- 
+
                 if (!postsResponse.ok || !repostsResponse.ok) {
                     throw new Error('Failed to fetch posts and reposts');
                 }
- 
+
                 const postData = await postsResponse.json();
                 const repostData = await repostsResponse.json();
- 
+
                 setPosts(postData);
                 setReposts(repostData);
             } catch (error) {
@@ -45,12 +45,12 @@ const UserPage = () => {
                 setFetchingPosts(false);
             }
         };
- 
+
         if (user) {
             getPostsAndReposts();
         }
     }, [username, user]);
- 
+
     if (!user && loading) {
         return (
             <Flex justifyContent={'center'}>
@@ -58,7 +58,7 @@ const UserPage = () => {
             </Flex>
         );
     }
- 
+
     if (!user && !loading)
         return (
             <Flex maxW={'xs'} direction={'column'} justify={'center'} alignItems={'center'} mx={'auto'}>
@@ -74,19 +74,18 @@ const UserPage = () => {
                 </Stack>
             </Flex>
         );
- 
-    if (!posts || !reposts) return null;
+
     return (
         <>
             <UserHeader user={user} />
- 
-            {!fetchingPosts && posts === null && <h1>User has not posts.</h1>}
+
             {fetchingPosts && (
                 <Flex justifyContent={'center'} my={12}>
                     <Spinner size={'xl'} />
                 </Flex>
             )}
-            <Tabs isFitted variant="enclosed">
+
+            <Tabs isFitted mt={2} colorScheme="gray">
                 <TabList mb="1em">
                     <Tab>Threads</Tab>
                     <Tab>Reposts</Tab>
@@ -95,7 +94,9 @@ const UserPage = () => {
                     <TabPanel>
                         {!fetchingPosts &&
                             posts.length > 0 &&
-                            posts.map((post) => <Post key={post._id} post={post} postedBy={post.postedBy} />)}
+                            posts.map((post) => (
+                                <Post key={post._id + post.updatedAt} post={post} postedBy={post.postedBy} />
+                            ))}
                     </TabPanel>
                     <TabPanel>
                         {!fetchingPosts &&
@@ -106,8 +107,11 @@ const UserPage = () => {
                     </TabPanel>
                 </TabPanels>
             </Tabs>
+
+            {!fetchingPosts && posts.length === 0 && <h1>User has not posts.</h1>}
+            {!fetchingPosts && reposts.length === 0 && <h1>User has not reposts.</h1>}
         </>
     );
 };
- 
+
 export default UserPage;

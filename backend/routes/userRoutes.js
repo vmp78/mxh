@@ -13,6 +13,7 @@ import {
     verifyResetPasswordToken,
     resetPassword,
     changePassword,
+    getLikedAndRepostedUsers,
 } from '../controllers/userController.js';
 import protectRoute from '../middlewares/protectRoute.js';
 
@@ -23,6 +24,8 @@ router.get('/search/:query', searchUser);
 
 // Get profile
 router.get('/profile/:query', getUserProfile);
+
+router.get('/liked-reposted/:postId', getLikedAndRepostedUsers);
 
 router.get('/suggested', protectRoute, getSuggestedUsers);
 

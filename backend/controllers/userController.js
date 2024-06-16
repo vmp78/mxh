@@ -46,6 +46,28 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+const getLikedAndRepostedUsers = async (req, res) => {
+    const { postId } = req.params;
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ error: 'Post not found' });
+        }
+        const _likedUsers = await User.find({ _id: { $in: post.likes } })
+            .select('username')
+            .select('avatar')
+            .select('name');
+        const _repostedUsers = await User.find({ _id: { $in: post.reposts } })
+            .select('username')
+            .select('avatar')
+            .select('name');
+        res.status(200).json({ _likedUsers, _repostedUsers });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+        console.log('Error in getLikedAndRepostedUsers: ' + error.message);
+    }
+};
+
 const signupUser = async (req, res) => {
     try {
         const { name, email, username, password } = req.body;
@@ -396,6 +418,7 @@ export {
     followUser,
     updateUser,
     getUserProfile,
+    getLikedAndRepostedUsers,
     getSuggestedUsers,
     freezeAccount,
     searchUser,

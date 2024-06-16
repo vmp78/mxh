@@ -34,7 +34,6 @@ const UserPage = () => {
 
                 const postData = await postsResponse.json();
                 const repostData = await repostsResponse.json();
-
                 setPosts(postData);
                 setReposts(repostData);
             } catch (error) {
@@ -92,24 +91,25 @@ const UserPage = () => {
                 </TabList>
                 <TabPanels>
                     <TabPanel>
-                        {!fetchingPosts &&
-                            posts.length > 0 &&
+                        {!fetchingPosts && posts.length > 0 ? (
                             posts.map((post) => (
                                 <Post key={post._id + post.updatedAt} post={post} postedBy={post.postedBy} />
-                            ))}
+                            ))
+                        ) : (
+                            <h1>User has not posts.</h1>
+                        )}
                     </TabPanel>
                     <TabPanel>
-                        {!fetchingPosts &&
-                            reposts.length > 0 &&
+                        {!fetchingPosts && reposts.length > 0 ? (
                             reposts.map((repost) => (
                                 <Repost key={repost._id} post={repost.post} postedBy={repost.postedBy} />
-                            ))}
+                            ))
+                        ) : (
+                            <h1>User has not reposts.</h1>
+                        )}
                     </TabPanel>
                 </TabPanels>
             </Tabs>
-
-            {!fetchingPosts && posts.length === 0 && <h1>User has not posts.</h1>}
-            {!fetchingPosts && reposts.length === 0 && <h1>User has not reposts.</h1>}
         </>
     );
 };

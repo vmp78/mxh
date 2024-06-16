@@ -95,14 +95,6 @@ const Post = ({ post, postedBy }) => {
                     </Box>
                 </Flex>
                 <Flex flex={1} flexDirection={'column'} gap={1}>
-                    {/* {post.createdAt !== post.updatedAt && (
-                        <Box color="gray.400">
-                            <EditIcon />
-                            <Box fontSize="small" fontWeight="bold" alignSelf="start" display="inline-block" ml={1}>
-                                edited {formatDistanceToNow(new Date(post.updatedAt))} ago
-                            </Box>
-                        </Box>
-                    )} */}
                     <Flex justifyContent={'space-between'} w={'full'}>
                         <Flex w={'full'} alignItems={'center'}>
                             <Text

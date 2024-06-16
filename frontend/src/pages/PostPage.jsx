@@ -1,5 +1,31 @@
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons';
-import { Avatar, Box, Button, Divider, Flex, Image, Spinner, Text, VStack } from '@chakra-ui/react';
+import { ChevronRightIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
+import {
+    Avatar,
+    Box,
+    Button,
+    Divider,
+    Flex,
+    Image,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Spacer,
+    Spinner,
+    Text,
+    VStack,
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    useDisclosure,
+    useColorModeValue,
+    HStack,
+} from '@chakra-ui/react';
 import { formatDistanceToNow } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -19,6 +45,30 @@ const PostPage = () => {
     const [posts, setPosts] = useRecoilState(postsAtom);
     const currentUser = useRecoilValue(userAtom);
     const showToast = useShowToast();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [likedUsers, setLikedUsers] = useState([]);
+    const [repostedUsers, setRepostedUsers] = useState([]);
+
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const res = await fetch(`/api/users/liked-reposted/${pid}`);
+                const { _likedUsers, _repostedUsers } = await res.json();
+                if (res.error) {
+                    showToast('Error at InfoModal', res.error, 'error');
+                    return;
+                }
+                setLikedUsers(_likedUsers);
+                setRepostedUsers(_repostedUsers);
+            } catch (error) {
+                showToast('Error at InfoModal', error.message, 'error');
+                setLikedUsers([]);
+                setRepostedUsers([]);
+            }
+        };
+
+        getUser();
+    }, [isOpen, onClose]);
 
     const [isUpdatePostOpen, setIsUpdatePostOpen] = useState(false);
     const handleUpdatePostOpen = () => {
@@ -120,9 +170,7 @@ const PostPage = () => {
                     )}
                 </Flex>
             </Flex>
-
             <Text my={3}>{posts[0].text}</Text>
-
             {posts[0].img && (
                 <Box borderRadius={6} overflow={'hidden'} border={'1px solid'} borderColor={'gray.light'}>
                     <Image src={posts[0].img} w={'full'} />
@@ -133,13 +181,20 @@ const PostPage = () => {
                 <Actions post={posts[0]} />
             </Flex>
 
-            {/* <Divider my={4} /> */}
+            <Divider variant={'solid'} my={4} />
 
-            <Text fontSize={'sm'} color={'gray.500'} align={'end'}>
-                Reply section
-            </Text>
+            <Flex>
+                <Text fontSize={'sm'} fontWeight={'bold'} color={'gray.500'}>
+                    Replies
+                </Text>
+                <Spacer />
+                <Text fontSize={'sm'} color={'gray.500'} cursor={'pointer'} onClick={onOpen}>
+                    View activity
+                    <ChevronRightIcon boxSize={5} />
+                </Text>
+            </Flex>
 
-            <Divider my={4} />
+            <Divider variant={'solid'} my={4} />
 
             {posts[0].replies.map((reply) => {
                 return (
@@ -152,6 +207,80 @@ const PostPage = () => {
                     </>
                 );
             })}
+
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent bgColor={useColorModeValue('whitesmoke', 'gray.900')}>
+                    <ModalHeader alignSelf={'center'}>Post activity</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Tabs isFitted>
+                            <TabList>
+                                <Tab>Likes ({posts[0].likes.length})</Tab>
+                                <Tab>Reposts ({posts[0].reposts.length})</Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel px={0}>
+                                    {likedUsers.map((user, index) => {
+                                        return (
+                                            <Flex
+                                                gap={4}
+                                                py={2}
+                                                my={2}
+                                                px={2}
+                                                borderRadius={5}
+                                                w={'full'}
+                                                as={Link}
+                                                to={`/${user.username}`}
+                                                key={index}
+                                                _hover={{ backgroundColor: useColorModeValue('gray.300', 'gray.700') }}
+                                            >
+                                                <Avatar src={user.avatar} />
+                                                <VStack w={'full'} alignItems={'start'} gap={1}>
+                                                    <Text fontSize="sm" fontWeight="bold">
+                                                        {user.username}
+                                                    </Text>
+                                                    <Text fontSize="sm" color={'gray'}>
+                                                        {user.name}
+                                                    </Text>
+                                                </VStack>
+                                            </Flex>
+                                        );
+                                    })}
+                                </TabPanel>
+                                <TabPanel p={0}>
+                                    {repostedUsers.map((user, index) => {
+                                        return (
+                                            <Flex
+                                                gap={4}
+                                                py={2}
+                                                my={2}
+                                                px={2}
+                                                borderRadius={5}
+                                                w={'full'}
+                                                as={Link}
+                                                to={`/${user.username}`}
+                                                key={index}
+                                                _hover={{ backgroundColor: useColorModeValue('gray.300', 'gray.700') }}
+                                            >
+                                                <Avatar src={user.avatar} />
+                                                <VStack w={'full'} alignItems={'start'} gap={1}>
+                                                    <Text fontSize="sm" fontWeight="bold">
+                                                        {user.username}
+                                                    </Text>
+                                                    <Text fontSize="sm" color={'gray'}>
+                                                        {user.name}
+                                                    </Text>
+                                                </VStack>
+                                            </Flex>
+                                        );
+                                    })}
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </>
     );
 };

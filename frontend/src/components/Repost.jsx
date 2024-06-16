@@ -47,70 +47,72 @@ const Repost = ({ post, postedBy }) => {
 
     if (!postUser || !repostUser) return null;
     return (
-        <Flex gap={3} mb={4}>
-            <Flex _hover={{ cursor: 'pointer' }} flexDirection={'column'} alignItems={'center'}>
+        <>
+            <Box
+                mb={5}
+                color="gray.400"
+                cursor={'pointer'}
+                onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/${repostUser.username}`);
+                }}
+            >
+                <RepeatIcon />
+                <Box fontSize="small" fontWeight="bold" alignSelf="start" display="inline-block" ml={1}>
+                    {repostUser.username}
+                    <Text display="inline-block" ml={1} fontWeight="normal">
+                        {' '}
+                        reposted
+                    </Text>
+                </Box>
+            </Box>
+            <Flex gap={3} mb={10}>
                 <Avatar
-                    mt={8}
+                    mt={1}
                     size="md"
                     name={postUser.name}
                     src={postUser?.avatar}
+                    _hover={{ cursor: 'pointer' }}
                     onClick={(e) => {
                         e.preventDefault();
                         navigate(`/${postUser.username}`);
                     }}
                 />
-            </Flex>
-            <Flex flex={1} flexDirection={'column'} gap={2}>
-                <Box
-                    color="gray.400"
-                    cursor={'pointer'}
-                    onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/${repostUser.username}`);
-                    }}
-                >
-                    <RepeatIcon />
-                    <Box fontSize="small" fontWeight="bold" alignSelf="start" display="inline-block" ml={1}>
-                        {repostUser.username}
-                        <Text display="inline-block" ml={1} fontWeight="normal">
-                            {' '}
-                            reposted
-                        </Text>
-                    </Box>
-                </Box>
-                <Flex justifyContent={'space-between'} w={'full'}>
-                    <Flex w={'full'} alignItems={'center'}>
-                        <Text
-                            _hover={{ cursor: 'pointer' }}
-                            fontSize={'sm'}
-                            fontWeight={'bold'}
-                            onClick={(e) => {
-                                e.preventDefault();
-                                navigate(`/${postUser.username}`);
-                            }}
-                        >
-                            {postUser?.username}
-                        </Text>
-                        <Image src="/verified.png" w={4} h={4} ml={1} />
+                <Flex flex={1} flexDirection={'column'} gap={2}>
+                    <Flex justifyContent={'space-between'} w={'full'}>
+                        <Flex w={'full'} alignItems={'center'}>
+                            <Text
+                                _hover={{ cursor: 'pointer' }}
+                                fontSize={'sm'}
+                                fontWeight={'bold'}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    navigate(`/${postUser.username}`);
+                                }}
+                            >
+                                {postUser?.username}
+                            </Text>
+                            <Image src="/verified.png" w={4} h={4} ml={1} />
+                        </Flex>
+                        <Flex gap={4} alignItems={'center'}>
+                            <Text fontSize={'xs'} width={36} textAlign={'right'} color={'gray.light'}>
+                                {formatDistanceToNow(new Date(post.createdAt))} ago
+                            </Text>
+                        </Flex>
                     </Flex>
-                    <Flex gap={4} alignItems={'center'}>
-                        <Text fontSize={'xs'} width={36} textAlign={'right'} color={'gray.light'}>
-                            {formatDistanceToNow(new Date(post.createdAt))} ago
+                    <Link to={`/${postUser.username}/post/${post._id}`}>
+                        <Text fontSize={'sm'} mb={2}>
+                            {post.text}
                         </Text>
-                    </Flex>
+                        {post.img && (
+                            <Box borderRadius={6} overflow={'hidden'} border={'1px solid'} borderColor={'gray.light'}>
+                                <Image src={post.img} w={'full'} />
+                            </Box>
+                        )}
+                    </Link>
                 </Flex>
-                <Text fontSize={'sm'} mb={2}>
-                    {post.text}
-                </Text>
-                <Link to={`/${postUser.username}/post/${post._id}`}>
-                    {post.img && (
-                        <Box borderRadius={6} overflow={'hidden'} border={'1px solid'} borderColor={'gray.light'}>
-                            <Image src={post.img} w={'full'} />
-                        </Box>
-                    )}
-                </Link>
             </Flex>
-        </Flex>
+        </>
     );
 };
 

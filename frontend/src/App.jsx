@@ -47,7 +47,7 @@ function App() {
                     <Route
                         path="/:username"
                         element={
-                            user.username === pathname.slice(1) ? (
+                            user && user.username === pathname.slice(1) ? (
                                 <>
                                     <UserPage />
                                     <CreatePost />

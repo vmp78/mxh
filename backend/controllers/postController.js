@@ -206,10 +206,15 @@ const getFeed = async (req, res) => {
 
         const filteredUsers = (
             await Promise.all(
-                following.map(async (userId) => {
-                    const currentUser = await User.findById(userId);
-                    return !currentUser.isFrozen && userId;
-                }),
+                following.map(async (followedUserId) => {
+                    const currentUser = await User.findById(followedUserId);
+                    if (currentUser) {
+                        if (!currentUser.isFrozen) {
+                            return followedUserId;
+                        }
+                    } 
+                    return null;
+                })
             )
         ).filter(Boolean);
 
@@ -217,12 +222,14 @@ const getFeed = async (req, res) => {
         const feedReposts = await Repost.find({ postedBy: { $in: filteredUsers } })
             .sort({ createdAt: -1 })
             .populate('post');
+        
         res.status(200).json({ feedPosts, feedReposts });
     } catch (err) {
         res.status(500).json({ error: err.message });
         console.log('Error at getFeed: ' + err.message);
     }
 };
+
 
 const getPost = async (req, res) => {
     try {
